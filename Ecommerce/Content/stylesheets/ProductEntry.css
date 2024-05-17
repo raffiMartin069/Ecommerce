@@ -1,0 +1,39 @@
+﻿
+
+form fieldset {
+    margin: 1rem 0 1rem 0;
+}
+
+    form fieldset div {
+        margin: 6px 0 6px 0;
+    }
+
+.main {
+    width: 100%;
+}
+
+
+@media screen and (min-width: 768px) {
+    .main form {
+        text-align: start;
+    }
+
+    .main {
+        width: 100%;
+    }
+
+    form div {
+        margin: 1rem 0;
+        align-self: start;
+    }
+
+    body .image-wrapper {
+        display: flex;
+    }
+
+    .grid-layout {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 20px;
+    }
+}

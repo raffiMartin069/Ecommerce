@@ -1,0 +1,109 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewBag.Title = "Administrator";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="~/Content/stylesheets/productentry.css" rel="stylesheet" />
+</head>
+<body>
+    <div>
+        <h1>Product Entry Form</h1>
+        <small>Register your product on the form below.</small>
+    </div>
+
+    <!--Ask for name input-->
+
+    <div class="grid-layout p-2 shadow-sm rounded-3">
+        <div class="main">
+            <form class="p-2" id="entry-form" method="post" action="../ProductEntry/UserApi" enctype="multipart/form-data" target="formTarget">
+                <fieldset>
+                    <h6>Personal Details</h6>
+                    <div><small class="text-danger">*</small><label for="user-fname">First Name:</label><input class="required form-control w-100 h-100" autocomplete="on" type="text" placeholder="First Name" name="user-fname" id="user-fname" /></div>
+                    <div><small class="text-danger">*</small><label for="user-lname">Middle Initial: </label><input class="form-control w-100 h-100" autocomplete="on" type="text" placeholder="Middle Initial" name="user-mname" id="user-mname" /></div>
+                    <div><small class="text-danger">*</small><label for="user-lname">Last Name: </label><input class="form-control w-100 h-100" autocomplete="on" type="text" placeholder="Last Name" name="user-lname" id="user-lname" /></div>
+                    <div><small class="text-danger">*</small><label for="user-email">Email: </label><input class="form-control w-100 h-100" autocomplete="on" type="email" placeholder="john.doe@hotmail.co.uk" name="user-email" id="user-email" /></div>
+                    <div><small class="text-danger">*</small><label for="user-phone">Phone Number: </label><input class="form-control w-100 h-100" main-gap" type="text" placeholder="+63" maxlength="11" autocomplete="on" name="user-phone" id="user-phone" /></div>
+                </fieldset>
+
+                <fieldset>
+                    <h6>Address Line</h6>
+                    <div><small class="text-danger">*</small><label for="line1">Line 1: </label><input class="form-control w-100 h-100" type="text" placeholder="Street Address" autocomplete="on" id="line1" name="line1" /></div>
+                    <div><label for="line2">Line 2: </label><input class="form-control w-100 h-100" type="text" placeholder="Street Address" autocomplete="on" id="line2" name="line2" /></div>
+                    <div>
+                        <small class="text-danger">City is required</small>
+                        <select class="form-select w-100 h-100" id="city" name="city">
+                            <option disabled selected>City</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <small class="text-danger">Province is required</small>
+                        <select class="form-select w-100 h-100" id="province" name="province">
+                            <option disabled selected>Province</option>
+                        </select>
+                    </div>
+
+                    <div><small class="text-danger">*</small><label for="zipcode">Zip Code: </label><input class="form-control w-100 h-100" type="text" placeholder="6000" autocomplete="on" id="zipcode" name="zipcode" /></div>
+
+                </fieldset>
+
+                <fieldset>
+                    <h6>Product Information</h6>
+                    <div><small class="text-danger">*</small><label for="make">Product Make: </label><input class="form-control w-100 h-100" type="text" placeholder="Make: Samsung" autocomplete="on" id="make" name="make" /></div>
+                    <div><small class="text-danger">*</small><label for="model">Product Model: </label><input class="form-control w-100 h-100" type="text" placeholder="Model: Galaxy A5" autocomplete="on" id="model" name="model" /></div>
+                    <div><small class="text-danger">*</small><label for="mod-id">Model I.D.: </label><input class="form-control w-100 h-100" type="text" placeholder="Model I.D." autocomplete="on" id="mod-id" name="mod-id" /></div>
+
+                    <div>
+                        <small class="text-danger">*</small>
+                        <select class="form-control">
+                            <option disabled selected>Distributor</option>
+                            <option id="dist_list"></option>
+                        </select>
+                    </div>
+
+                    <div><small class="text-danger">*</small><label for="purchase-date">Purchase Date: </label><input class="form-control w-100 h-100" type="date" placeholder="Date" id="purchase-date" name="purchase-date" /> <small>Please provide date purchased</small></div>
+                </fieldset>
+
+                <fieldset>
+                    <div><small class="text-danger">*</small><label for="price">Price </label><input class="form-control w-100 h-100" type="number" placeholder="Ex. 40000" id="price" name="price" /> <small>Price entered should be without decimal (40000 = 400.00).<br /></small></div>
+                    <div><small class="text-danger">*</small><label for="quantity">Quantity </label><input class="form-control w-100 h-100" type="number" placeholder="Ex. 1" id="quantity" name="quantity" /></div>
+                    <div><small class="text-danger">*</small><label for="warranty">Warranty </label><input class="form-control w-100 h-100" type="date" id="warranty" name="warranty" /></div>
+                </fieldset>
+
+                <fieldset>
+                    <div>
+                        <label for="desc">Description</label>
+                        <textarea placeholder="Add description" style="text-align:left; vertical-align:top;" cols="50" rows="3" class="form-control" id="desc" name="desc"></textarea>
+                    </div>
+                    <div>
+                        <label for="prod-img">Product Image</label>
+                        <input class="form-control" type="file" id="prod-img" name="prod-img" />
+                    </div>
+                </fieldset>
+
+                <div class="gap d-flex">
+                    <input class="w-100 h-100 btn btn-primary mb-3 shadow rounded-5" type="submit" value="Register Product" />
+                </div>
+            </form>
+        </div>
+        <iframe id="formTarget" name="formTarget" style="display: none;"></iframe>
+        <div class="w-100 p-2x" id="img-container">
+            <img src="~/Content/assets/prod_entry.png" class="img-fluid my-auto p-3" style="display:inherit;" />
+        </div>
+    </div>
+    @section scripts {
+        <script src="~/Scripts/jquery-3.4.1.js"></script>
+        <script src="~/Scripts/JavaScript/Api.js"></script>
+        <script src="~/Scripts/JavaScript/ProductEntryControl.js"></script>
+        <script src="~/Scripts/SweetAlert/sweetalert.js"></script>
+    }
+</body>
+</html>
+
