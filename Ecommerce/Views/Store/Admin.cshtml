@@ -12,11 +12,111 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Log In | Shopfiy</title>
-    <link rel="stylesheet" href="style.css">
+    <link href="~/Content/stylesheets/admin/dashboard.css" rel="stylesheet" />
+    <link href="~/Content/stylesheets/admin/dash-table.css" rel="stylesheet" />
 </head>
 <body>
-    <div class="d-flex" style="margin: 5rem 0 5rem">
+    <div style="margin: 5rem 0 5rem">
+        <div>
+            <h1>Ladaza Dashboard</h1>
+            <section>
+                <div style="margin-top:5rem;" class="container"><h3>List of products</h3></div>
+                <nav class="navbar navbar-light">
+                    <div class="container-fluid">
+                        <form>
+                            <div class="container" id="ops-wrapper">
+                                <input class="form-control me-2 w-100" type="search" placeholder="Search" aria-label="Search">
+                                <button class="btn btn-outline-primary responsive-button" type="submit" style="white-space: nowrap;">Search</button>
+                                <button class="btn btn-outline-danger responsive-button" type="submit" style="white-space: nowrap;">Remove Information</button>
+                                <button class="btn btn-outline-success responsive-button" type="submit" style="white-space: nowrap;">Add Information</button>
+                                <button class="btn btn-outline-warning responsive-button" type="submit" style="white-space: nowrap;">Update Information</button>
+                            </div>
+                        </form>
+                    </div>
+                </nav>
+                <div class="container table-responsive table-container">
+                    <table class="text-center table w-100 align-middle mb-0 border bg-white">
+                        <thead class="bg-light sticky-top top-0 border">
+                            <tr>
+                                <th>Name</th>
+                                <th>Make</th>
+                                <th>Model</th>
+                                <th>Serial No.</th>
+                                <th>Warranty</th>
+                                <th>Quantity</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    Rafael Martinez
+                                </td>
+                                <td>
+                                    Oppo
+                                </td>
+                                <td>
+                                    Reno 2F
+                                </td>
+                                <td>
+                                    SN-123456
+                                </td>
+                                <td>
+                                    2023-12-31
+                                </td>
+                                <td>
+                                    10
+                                </td>
+                                <td>
+                                    1000.00
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
 
+            <section>
+                <div style="margin-top:5rem;" class="container"><h3>Customer details</h3></div>
+                <nav class="navbar navbar-light">
+                    <div class="container-fluid">
+                        <form>
+                            <div class="container" id="ops-wrapper">
+                                <input class="form-control me-2 w-100" type="search" placeholder="Search" aria-label="Search">
+                                <button class="btn btn-outline-primary responsive-button" type="submit" style="white-space: nowrap;">Search</button>
+                                <button class="btn btn-outline-danger responsive-button" type="submit" style="white-space: nowrap;">Remove Information</button>
+                                <button class="btn btn-outline-success responsive-button" type="submit" style="white-space: nowrap;">Add Information</button>
+                                <button class="btn btn-outline-warning responsive-button" type="submit" style="white-space: nowrap;">Update Information</button>
+                            </div>
+                        </form>
+                    </div>
+                </nav>
+                <div class="container table-responsive table-container">
+                    <table class="text-center table w-100 align-middle mb-0 border bg-white">
+                        <thead class="bg-light sticky-top top-0 border">
+                            <tr>
+                                <th>First Name</th>
+                                <th>Last Make</th>
+                                <th>Address</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    Rafael 
+                                </td>
+                                <td>
+                                    Martinez
+                                </td>
+                                <td>
+                                    Sandayong, Guadalupe
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
     </div>
 </body>
 </html>

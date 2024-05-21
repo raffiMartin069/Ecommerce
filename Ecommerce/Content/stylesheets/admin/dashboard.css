@@ -1,0 +1,26 @@
+﻿
+
+.table-container {
+    height: 30.9rem; /* Set the height you want */
+    overflow: auto; /* Enable scrolling if the content exceeds the set height */
+}
+
+form button {
+    margin-left: 0.2rem;
+}
+
+.responsive-button {
+    white-space: normal; /* Default to normal for small screens */
+    display: inline-block; /* Ensure it is an inline-block element */
+    padding: 10px 20px; /* Adjust padding as needed */
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+/* Media query for screens 768px and larger */
+@media (min-width: 768px) {
+    .responsive-button {
+        white-space: nowrap; /* Prevent text from wrapping */
+        width: auto; /* Adjust width as needed */
+    }
+}

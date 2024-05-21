@@ -227,3 +227,5 @@ $RECYCLE.BIN/
 *.DS_Store
 
 /Ecommerce.Test/
+Ecommerce.Test/
+/Ecommerce.Test

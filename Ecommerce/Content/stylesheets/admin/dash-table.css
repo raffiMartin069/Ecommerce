@@ -1,0 +1,9 @@
+﻿.table td, .table th {
+    word-wrap: break-word; /* Break words to prevent stretching */
+    max-width: 150px; /* Limit the maximum width of a cell */
+}
+
+.table img {
+    max-width: 100%;
+    height: auto;
+}

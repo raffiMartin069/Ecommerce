@@ -135,9 +135,20 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Credential.cs" />
+    <Compile Include="Models\Address.cs" />
+    <Compile Include="Models\RegistrationResult.cs" />
+    <Compile Include="Models\Store\Admin.cs" />
+    <Compile Include="Models\Store\EntryData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\Store\AdminRepository.cs" />
+    <Content Include="Scripts\JavaScript\Admin\AdminResgistration.js" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\Ladaza.mdf" />
+    <Content Include="App_Data\Ladaza_log.ldf">
+      <DependentUpon>Ladaza.mdf</DependentUpon>
+    </Content>
     <Content Include="Content\assets\amazon.jpg" />
     <Content Include="Content\assets\prod_entry.png" />
     <Content Include="Content\assets\samsung_cover.jpg" />
@@ -157,6 +168,8 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
+    <Content Include="Content\stylesheets\admin\dash-table.css" />
+    <Content Include="Content\stylesheets\admin\dashboard.css" />
     <Content Include="Content\stylesheets\login.css" />
     <Content Include="Content\stylesheets\productentry.css" />
     <Content Include="favicon.ico" />
@@ -173,10 +186,11 @@
       <DependentUpon>Dockerfile</DependentUpon>
     </None>
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
+    <Content Include="Scripts\JavaScript\Admin\Login.js" />
     <Content Include="Scripts\JavaScript\Api.js" />
-    <Content Include="Scripts\JavaScript\CustomerLogin.js" />
-    <Content Include="Scripts\JavaScript\ProductEntryControl.js" />
-    <Content Include="Scripts\JavaScript\SignUp.js" />
+    <Content Include="Scripts\JavaScript\Log_in\CustomerLogin.js" />
+    <Content Include="Scripts\JavaScript\Admin\ProductEntryControl.js" />
+    <Content Include="Scripts\JavaScript\Log_in\SignUp.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
     <Content Include="Scripts\jquery-3.4.1.slim.js" />
@@ -187,7 +201,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
-    <Content Include="Scripts\SweetAlert\sweetalert.js" />
+    <Content Include="Scripts\JavaScript\sweetalert.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -208,10 +222,10 @@
     <Content Include="Views\Store\Admin.cshtml" />
     <Content Include="Views\Store\ProductEntry.cshtml" />
     <Content Include="Views\Shared\_AdminLayout.cshtml" />
+    <Content Include="Views\Store\Register.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
+    <Folder Include="Image\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

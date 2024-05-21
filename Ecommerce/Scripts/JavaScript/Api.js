@@ -32,7 +32,7 @@
 
         // Sort the cities array
         cities.sort().forEach(city => {
-            $("#city").append(`<option>${city}</option>`);
+            $("#reg_city").append(`<option>${city}</option>`);
         });
 
 
@@ -48,7 +48,7 @@
             province.push(response[i].name);
         }
         province.sort().forEach(province => {
-            $("#province").append(`<option>${province}</option>`);
+            $("#reg_province").append(`<option>${province}</option>`);
         });
     }).catch((error) => {
         console.error("Error fetching provinces:", error);

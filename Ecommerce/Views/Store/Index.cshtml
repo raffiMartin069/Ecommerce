@@ -1,6 +1,7 @@
 ﻿
 @{
     ViewBag.Title = "Administrator";
+    ViewBag.HideNavbar = true;
 
     var currentTime = DateTime.Now.TimeOfDay;
     string greeting;
@@ -60,9 +61,13 @@
 
             <!-- Register buttons -->
             <div class="text-center">
-                <small>Problems signing in? Contact <b class="text-primary"> Administrator.</b></small>
+                <small>Problems signing in? Contact <a href="#" class="text-decoration-none">Administrator.</a></small>
             </div>
         </form>
     </div>
+    @section scripts {
+        <script src="~/Scripts/jquery-3.4.1.js"></script>
+        <script src="~/Scripts/JavaScript/Admin/Login.js"></script>
+        }
 </body>
 </html>

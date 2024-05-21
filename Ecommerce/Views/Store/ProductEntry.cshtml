@@ -49,9 +49,7 @@
                             <option disabled selected>Province</option>
                         </select>
                     </div>
-
                     <div><small class="text-danger">*</small><label for="zipcode">Zip Code: </label><input class="form-control w-100 h-100" type="text" placeholder="6000" autocomplete="on" id="zipcode" name="zipcode" /></div>
-
                 </fieldset>
 
                 <fieldset>
@@ -62,9 +60,13 @@
 
                     <div>
                         <small class="text-danger">*</small>
-                        <select class="form-control">
+                        <select id="distributor" class="form-control">
                             <option disabled selected>Distributor</option>
-                            <option id="dist_list"></option>
+                            <option>Samsung</option>
+                            <option>Apple</option>
+                            <option>Oppo</option>
+                            <option>Vivo</option>
+                            <option>Realme</option>
                         </select>
                     </div>
 
@@ -84,12 +86,12 @@
                     </div>
                     <div>
                         <label for="prod-img">Product Image</label>
-                        <input class="form-control" type="file" id="prod-img" name="prod-img" />
+                        <input class="form-control" type="file" id="prodimg" name="prodimg" />
                     </div>
                 </fieldset>
 
                 <div class="gap d-flex">
-                    <input class="w-100 h-100 btn btn-primary mb-3 shadow rounded-5" type="submit" value="Register Product" />
+                    <input class="w-100 h-100 btn btn-primary mb-3 shadow rounded-5" id="sbmt" type="submit" value="Register Product" />
                 </div>
             </form>
         </div>
@@ -101,8 +103,7 @@
     @section scripts {
         <script src="~/Scripts/jquery-3.4.1.js"></script>
         <script src="~/Scripts/JavaScript/Api.js"></script>
-        <script src="~/Scripts/JavaScript/ProductEntryControl.js"></script>
-        <script src="~/Scripts/SweetAlert/sweetalert.js"></script>
+        <script src="~/Scripts/JavaScript/Admin/ProductEntryControl.js"></script>
     }
 </body>
 </html>
