@@ -37,66 +37,18 @@
     }
 
     function userControl() {
-        let fname = $("#user-fname").val();
-        let lname = $("#user-lname").val();
-        let email = $("#user-email").val();
-        let phone = $("#user-phone").val();
-
-        if (!TextFieldControl(fname)) {
-            alert("First name is required.");
+        let userId = $("#userId").val();
+        if (!TextFieldControl(userId)) {
+            alert("I.D. is required.");
             return;
         }
 
-        if (!TextFieldControl(lname)) {
-            alert("Last name is required.");
-            return false;
-        }
-
-        if (!TextFieldControl(email)) {
-            alert("Email is required.");
-            return false;
-        }
-
-        if (!TextFieldControl(phone)) {
-            alert("Phone number is required.");
-            return false;
-        }
-        return true;
-    }
-
-    function userAddressControl() {
-        let line = $("#line1").val();
-        /*let line2 = $("#line2").val();*/
-        let city = $("#city").val();
-        let province = $("#province").val();
-        let zipCode = $("#zipcode").val();
-
-        if (!TextFieldControl(line)) {
-            alert("Address is required.");
-            return false;
-        }
-
-        if (!TextFieldControl(city)) {
-            alert("City is required.");
-            return false;
-        }
-
-        if (!TextFieldControl(province)) {
-            alert("Province is required.");
-            return false;
-        }
-
-        if (!TextFieldControl(zipCode)) {
-            alert("Zip code is required.");
-            return false;
-        }
         return true;
     }
 
     function productControl() {
         let make = $("#make").val();
         let model = $("#model").val();
-        let modelId = $("#mod-id").val();
         let distributor = $("#distributor").val();
         let purchaseDate = $("#purchase-date").val();
 
@@ -107,11 +59,6 @@
 
         if (!TextFieldControl(model)) {
             alert("Model is required.");
-            return false;
-        }
-
-        if (!TextFieldControl(modelId)) {
-            alert("Model ID is required.");
             return false;
         }
 
@@ -154,7 +101,6 @@
             alert("Image is required.");
             return false;
         }
-
         return true;
     }
 
@@ -162,23 +108,37 @@
         e.preventDefault();
         if (!userControl()) {
             return;
-        } else if (!userAddressControl()) {
-            return;
         } else if (!productControl()) {
             return;
         }
-
+        
         let formData = new FormData(this);
         // Ajax request
         try {
             $.ajax({
-                url: "../ProductEntry/UserApi",
+                url: "../Store/Entries",
                 method: "POST",
                 data: formData,
                 contentType: false,
                 processData: false,
                 success: (response) => {
-                    alert("Create a logic in the controller first!");
+                    if (!response.success) {
+                         swal({
+                            title: "Failed to register",
+                            text: response.response,
+                            icon: "error",
+                            button: "Continue",
+                         });
+                        return;
+                    }
+                    swal({
+                        title: response.title,
+                        text: response.response,
+                        icon: "success",
+                        button: "Continue",
+                    });
+                    $('#entry-form')[0].reset();
+                    return;
                 },
                 fail: () => {
                     console.error("Something went wrong!");

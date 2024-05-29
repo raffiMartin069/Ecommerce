@@ -3,7 +3,6 @@
     ViewBag.HideNavbar = true;
     ViewBag.Title = "Sign Up";
 }
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,7 +33,7 @@
                     <div class="col-lg-6 mb-5 mb-lg-0">
                         <div class="card shadow">
                             <div class="card-body py-5 px-md-5">
-                                <form>
+                                <form method="post" id="register">
                                     <div class="py-3 text-primary"><h1 class="fs-1 fw-bold">Sign up now!</h1></div>
                                     <!-- 2 column grid layout with text inputs for the first and last names -->
                                     <div class="row">
@@ -51,8 +50,6 @@
                                             </div>
                                         </div>
                                     </div>
-
-
 
                                     <!-- Email input -->
                                     <div data-mdb-input-init class="form-outline mb-4">
@@ -76,7 +73,7 @@
                                         </div>
                                         <div class="col-md-6 mb-4">
                                             <div data-mdb-input-init class="form-outline">
-                                                <input type="text" id="reg_brgy" name="reg_brgy" class="form-control" />
+                                                <input type="text" id=" " name="reg_brgy" class="form-control" />
                                                 <label class="form-label" for="reg_brgy">Barangay</label>
                                             </div>
                                         </div>
@@ -156,8 +153,48 @@
     </section>
     @section scripts {
         <script src="~/Scripts/jquery-3.4.1.js"></script>
-        <script src="~/Scripts/JavaScript/Log_in/SignUp.js"></script>
+        @*<script src="~/Scripts/JavaScript/Log_in/SignUp.js"></script>*@
         <script src="~/Scripts/JavaScript/Api.js"></script>
+        <script>
+            $(function () {
+                const validation = () => {
+                    var inputs = ['reg_fname', 'reg_lname', 'reg_email', 'reg_phone', 'reg_street', 'reg_brgy', 'reg_city', 'reg_province', 'reg_zip', 'reg_pass'];
+                    var isValid = true;
+
+                    for (var i = 0; i < inputs.length; i++) {
+                        var input = $('#' + inputs[i]);
+                        if (!input.val()) {
+                            alert('Please fill out the ' + input.attr('name') + ' field.');
+                            isValid = false;
+                            break;
+                        }
+                    }
+                    return isValid;
+                }
+
+
+                $("#register").on("submit", function (e) {
+                    e.preventDefault();
+                    validation();
+
+                    let formData = new FormData(this);
+
+                    $.ajax({
+                        url: "../LogIn/Register",
+                        method: "POST",
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        success: function (data) {
+                            alert(data);
+                        },
+                        fail: function (error) {
+
+                        }
+                    })
+                })
+            })
+        </script>
     }
     <!-- Section: Design Block -->
 </body>

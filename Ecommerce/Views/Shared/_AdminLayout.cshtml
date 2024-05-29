@@ -42,6 +42,7 @@
                 <ul class="navbar-nav flex-grow-1">
                     <li>@Html.ActionLink("Shop N' Go!", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                     <li>@Html.ActionLink("Product Entry", "ProductEntry", "Store", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>@Html.ActionLink("Analytics", "Analytics", "Store", new { area = "" }, new { @class = "nav-link" })</li>
                 </ul>
             </div>
         </div>
@@ -58,7 +59,6 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    <script src="~/Scripts/JavaScript/sweetalert.js"></script>
 </body>
 </html>

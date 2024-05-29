@@ -26,7 +26,7 @@
         let formData = new FormData($("form")[0]);
         try {
             $.ajax({
-                url: "../Store/Register/api",
+                url: "../Store/Register",
                 method: "POST",
                 data: formData,
                 contentType: false,
@@ -40,12 +40,12 @@
                             button: "Continue",
                         });
                     }
-                    return swal({
-                        title: "All set!",
-                        text: "Registration successful!",
-                        icon: "success",
-                        button: "Continue",
-                    });
+                    //return swal({
+                    //    title: "All set!",
+                    //    text: "Registration successful!",
+                    //    icon: "success",
+                    //    button: "Continue",
+                    //});
 
                 },
                 fail: (error) => {

@@ -1,0 +1,9 @@
+﻿/*.product-image {
+    width: 100px;
+    height: 100px;
+}*/
+
+#action-wrapper #actions > button {
+    justify-content: end;
+    text-align: end;
+}

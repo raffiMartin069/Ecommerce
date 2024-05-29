@@ -4,6 +4,8 @@
     ViewBag.Title = "Administrator";
 }
 
+@model List<Ecommerce.Models.Store.Distributor>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,51 +24,31 @@
 
     <div class="grid-layout p-2 shadow-sm rounded-3">
         <div class="main">
-            <form class="p-2" id="entry-form" method="post" action="../ProductEntry/UserApi" enctype="multipart/form-data" target="formTarget">
+            <form class="p-2" id="entry-form" method="post" @Url.Action("Entries", "Store") enctype="multipart/form-data">
                 <fieldset>
-                    <h6>Personal Details</h6>
-                    <div><small class="text-danger">*</small><label for="user-fname">First Name:</label><input class="required form-control w-100 h-100" autocomplete="on" type="text" placeholder="First Name" name="user-fname" id="user-fname" /></div>
-                    <div><small class="text-danger">*</small><label for="user-lname">Middle Initial: </label><input class="form-control w-100 h-100" autocomplete="on" type="text" placeholder="Middle Initial" name="user-mname" id="user-mname" /></div>
-                    <div><small class="text-danger">*</small><label for="user-lname">Last Name: </label><input class="form-control w-100 h-100" autocomplete="on" type="text" placeholder="Last Name" name="user-lname" id="user-lname" /></div>
-                    <div><small class="text-danger">*</small><label for="user-email">Email: </label><input class="form-control w-100 h-100" autocomplete="on" type="email" placeholder="john.doe@hotmail.co.uk" name="user-email" id="user-email" /></div>
-                    <div><small class="text-danger">*</small><label for="user-phone">Phone Number: </label><input class="form-control w-100 h-100" main-gap" type="text" placeholder="+63" maxlength="11" autocomplete="on" name="user-phone" id="user-phone" /></div>
-                </fieldset>
-
-                <fieldset>
-                    <h6>Address Line</h6>
-                    <div><small class="text-danger">*</small><label for="line1">Line 1: </label><input class="form-control w-100 h-100" type="text" placeholder="Street Address" autocomplete="on" id="line1" name="line1" /></div>
-                    <div><label for="line2">Line 2: </label><input class="form-control w-100 h-100" type="text" placeholder="Street Address" autocomplete="on" id="line2" name="line2" /></div>
-                    <div>
-                        <small class="text-danger">City is required</small>
-                        <select class="form-select w-100 h-100" id="city" name="city">
-                            <option disabled selected>City</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <small class="text-danger">Province is required</small>
-                        <select class="form-select w-100 h-100" id="province" name="province">
-                            <option disabled selected>Province</option>
-                        </select>
-                    </div>
-                    <div><small class="text-danger">*</small><label for="zipcode">Zip Code: </label><input class="form-control w-100 h-100" type="text" placeholder="6000" autocomplete="on" id="zipcode" name="zipcode" /></div>
+                    <h6>Entered By:</h6>
+                    <div><small class="text-danger">*</small><label for="userId">I.D. Number:</label><input class="required form-control w-100 h-100" autocomplete="on" type="text" placeholder="I.D. Number" name="userId" id="userId" /></div>
                 </fieldset>
 
                 <fieldset>
                     <h6>Product Information</h6>
                     <div><small class="text-danger">*</small><label for="make">Product Make: </label><input class="form-control w-100 h-100" type="text" placeholder="Make: Samsung" autocomplete="on" id="make" name="make" /></div>
                     <div><small class="text-danger">*</small><label for="model">Product Model: </label><input class="form-control w-100 h-100" type="text" placeholder="Model: Galaxy A5" autocomplete="on" id="model" name="model" /></div>
-                    <div><small class="text-danger">*</small><label for="mod-id">Model I.D.: </label><input class="form-control w-100 h-100" type="text" placeholder="Model I.D." autocomplete="on" id="mod-id" name="mod-id" /></div>
-
                     <div>
                         <small class="text-danger">*</small>
-                        <select id="distributor" class="form-control">
+                        <select id="distributor" name="distributor" class="form-control">
                             <option disabled selected>Distributor</option>
-                            <option>Samsung</option>
-                            <option>Apple</option>
-                            <option>Oppo</option>
-                            <option>Vivo</option>
-                            <option>Realme</option>
+
+                            @{
+                                if (Model != null && Model.Count > 0)
+                                {
+                                    foreach(var dis in Model)
+                                    {
+                                        <option value="@dis.D_ID">@dis.D_NAME</option>
+                                    }
+                                }
+                            }
+
                         </select>
                     </div>
 
@@ -76,7 +58,7 @@
                 <fieldset>
                     <div><small class="text-danger">*</small><label for="price">Price </label><input class="form-control w-100 h-100" type="number" placeholder="Ex. 40000" id="price" name="price" /> <small>Price entered should be without decimal (40000 = 400.00).<br /></small></div>
                     <div><small class="text-danger">*</small><label for="quantity">Quantity </label><input class="form-control w-100 h-100" type="number" placeholder="Ex. 1" id="quantity" name="quantity" /></div>
-                    <div><small class="text-danger">*</small><label for="warranty">Warranty </label><input class="form-control w-100 h-100" type="date" id="warranty" name="warranty" /></div>
+                    <div><small class="text-danger">*</small><label for="warranty">Warranty (Year)</label><input class="form-control w-100 h-100" type="number" id="warranty" name="warranty" /></div>
                 </fieldset>
 
                 <fieldset>
@@ -85,7 +67,7 @@
                         <textarea placeholder="Add description" style="text-align:left; vertical-align:top;" cols="50" rows="3" class="form-control" id="desc" name="desc"></textarea>
                     </div>
                     <div>
-                        <label for="prod-img">Product Image</label>
+                        <label for="prodimg">Product Image</label>
                         <input class="form-control" type="file" id="prodimg" name="prodimg" />
                     </div>
                 </fieldset>
@@ -95,7 +77,6 @@
                 </div>
             </form>
         </div>
-        <iframe id="formTarget" name="formTarget" style="display: none;"></iframe>
         <div class="w-100 p-2x" id="img-container">
             <img src="~/Content/assets/prod_entry.png" class="img-fluid my-auto p-3" style="display:inherit;" />
         </div>

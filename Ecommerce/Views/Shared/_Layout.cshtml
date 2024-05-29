@@ -30,6 +30,7 @@
                     </ul>
                 </div>
                 <div class="justify-content-end d-none d-md-block">
+                    <a href="#"><i class="bi bi-cart-fill fw-bolder text-white fs-3 mx-3"></i></a>
                     <a href="#"><i class="bi bi-bag-check fw-bolder text-white fs-3 mx-3"></i></a>
                     <a href="#"><i class="bi bi-person-fill fw-bolder text-white fs-3"></i></a>
                 </div>
@@ -46,7 +47,8 @@
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/Scripts/bootstrap.bundle.min.js")
     @RenderSection("scripts", required: false)
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/Scripts/JavaScript/sweetalert.js"></script>
 </body>
 </html>

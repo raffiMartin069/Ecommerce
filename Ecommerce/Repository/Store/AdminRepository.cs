@@ -2,6 +2,7 @@
 using Ecommerce.Models.Store;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
@@ -13,8 +14,9 @@ namespace Ecommerce.Repository.Store
     {
         private string SQLString()
         {
-            return "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\Code-Space\\VisualStudio\\Ecommerce\\Ecommerce\\App_Data\\Ladaza.mdf;Integrated Security=True";
+            return ConfigurationManager.AppSettings["SQLStr"];
         }
+
         public int AdminDetails(Admin data)
         {
             int id = 0;
@@ -101,7 +103,6 @@ namespace Ecommerce.Repository.Store
             }
             catch (Exception)
             {
-
                 throw;
             }
 

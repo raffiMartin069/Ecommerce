@@ -1,0 +1,161 @@
+﻿
+@{
+    ViewBag.Title = "Cart";
+}
+
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <link href="~/Content/stylesheets/home/checkout.css" rel="stylesheet" />
+</head>
+<body class="bg-body-tertiary">
+
+    <div class="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
+        <button class="btn btn-bd-dark py-2 dropdown-toggle d-flex align-items-center"
+                id="bd-theme"
+                type="button"
+                aria-expanded="false"
+                data-bs-toggle="dropdown"
+                aria-label="Toggle theme (auto)">
+            <svg class="bi my-1 theme-icon-active" width="1em" height="1em"><use href="#circle-half"></use></svg>
+            <span class="visually-hidden" id="bd-theme-text">Toggle theme</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="bd-theme-text">
+            <li>
+                <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="false">
+                    <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#sun-fill"></use></svg>
+                    Light
+                    <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
+                </button>
+            </li>
+            <li>
+                <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark" aria-pressed="false">
+                    <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#moon-stars-fill"></use></svg>
+                    Dark
+                    <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
+                </button>
+            </li>
+            <li>
+                <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="auto" aria-pressed="true">
+                    <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#circle-half"></use></svg>
+                    Auto
+                    <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
+                </button>
+            </li>
+        </ul>
+    </div>
+
+
+    <div class="">
+        <main>
+            <div class="py-5 text-center">
+                <img class="d-block mx-auto mb-4" src="https://picsum.photos/200/300" alt="" width="72" height="57">
+                <h2>Checkout form</h2>
+            </div>
+
+            <div class="row g-5">
+                <div class="col-md-5 col-lg-4 order-md-last">
+                    <h4 class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-dark">Your cart</span>
+                        <span class="badge bg-dark rounded-pill">3</span>
+                    </h4>
+                    <ul class="list-group mb-3">
+                        <li class="list-group-item d-flex justify-content-between lh-sm">
+                            <div>
+                                <h6 class="my-0">Product name</h6>
+                                <small class="text-body-secondary">Brief description</small>
+                            </div>
+                            <span class="text-body-secondary">$12</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between lh-sm">
+                            <div>
+                                <h6 class="my-0">Second product</h6>
+                                <small class="text-body-secondary">Brief description</small>
+                            </div>
+                            <span class="text-body-secondary">$8</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between lh-sm">
+                            <div>
+                                <h6 class="my-0">Third item</h6>
+                                <small class="text-body-secondary">Brief description</small>
+                            </div>
+                            <span class="text-body-secondary">$5</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between bg-body-tertiary">
+                            <div class="text-success">
+                                <h6 class="my-0">Promo code</h6>
+                                <small>EXAMPLECODE</small>
+                            </div>
+                            <span class="text-success">−$5</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Total (USD)</span>
+                            <strong>$20</strong>
+                        </li>
+                    </ul>
+
+                    <form class="card p-2">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Promo code">
+                            <button type="submit" class="btn btn-dark">Redeem</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-7 col-lg-8">
+                    <h4 class="mb-3">Billing address</h4>
+                    <form class="needs-validation" novalidate>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card border-light p-4">
+                                    <div class="row align-items-center">
+                                        <aside class="col-md-3">
+                                            <a href="#">
+                                                <img src="~/Content/assets/samsung_cover.jpg" class="img-fluid" alt="product-image">
+                                            </a>
+                                        </aside> <!-- col.// -->
+                                        <div class="col-md-6">
+                                            <div class="info-main">
+                                                <a href="#" class="h5 title text-decoration-none text-dark"> Apple Watch Series 3 </a>
+                                                <div class="d-flex my-3">
+                                                    <span class="badge badge-pill badge-gray ml-2">4.7</span>
+                                                    <span class="small text-success ml-3"><i class="fas fa-shopping-cart mr-1"></i>150 orders</span>
+                                                </div>
+                                                <p>Monitor your health. Track your workouts. Get the motivation you need to achieve your fitness goals. And stay connected to the people and information you care about.</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-3">
+                                            <div class="d-flex align-items-center">
+                                                <span class="h5 mb-0 text-gray text-through mr-2">
+                                                    $299.00
+                                                </span>
+                                                <span class="h6 mb-0 text-danger">$199.00</span>
+                                            </div> <!-- info-price-detail // -->
+                                            @*<span class="text-success small"><i class="fas fa-shipping-fast mr-1"></i>Free shipping</span>*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="my-4">
+                        <button class="w-100 btn btn-dark btn-lg" type="submit">Continue to checkout</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+
+        <footer class="my-5 pt-5 text-body-secondary text-center text-small">
+            <p class="mb-1">&copy; 2024–2024 Company Name</p>
+            <ul class="list-inline">
+                <li class="list-inline-item"><a href="#">Privacy</a></li>
+                <li class="list-inline-item"><a href="#">Terms</a></li>
+                <li class="list-inline-item"><a href="#">Support</a></li>
+            </ul>
+        </footer>
+    </div>
+    <script src="~/Scripts/JavaScript/Home/checkout.js"></script>
+</body>
+</html>
+

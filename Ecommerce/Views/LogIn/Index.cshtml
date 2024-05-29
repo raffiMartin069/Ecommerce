@@ -2,6 +2,9 @@
 @{
     ViewBag.HideNavbar = true;
     ViewBag.Title = "Log In";
+
+    var emailValidation = TempData["email"] as string;
+    var passwordValidation = TempData["password"] as string;
 }
 
 <!DOCTYPE html>
@@ -15,14 +18,26 @@
 </head>
 <body>
     <div class="d-flex" style="margin: 5rem 0 5rem">
-        <form class="m-auto border p-5 rounded shadow" id="login_form">
+        
+        <form method="post" action="../LogIn/LogIn" class="m-auto border p-5 rounded shadow" id="loginForm">
             <div class="form-label"><label class="form-label fw-bold fs-3 pb-5">Welcome to <small class="text-primary">Shop <small class="fs-3">N</small>' Go!</small></label></div>
             <!-- Email input -->
+            @*@{
+                if (!string.IsNullOrEmpty(emailValidation))
+                {
+                    <small>Email can not be empty.</small>
+                }
+            }*@
             <div data-mdb-input-init class="form-outline mb-4">
                 <input type="email" id="cus_email" name="cus_email" class="form-control container" />
                 <label class="form-label" for="cus_email">Email address</label>
             </div>
-
+            @*@{
+                if (!string.IsNullOrEmpty(passwordValidation))
+                {
+                    <small>Password can not be empty.</small>
+                }
+            }*@
             <!-- Password input -->
             <div data-mdb-input-init class="form-outline mb-4">
                 <input type="password" id="cus_pass" name="cus_pass" class="form-control container" />
@@ -46,7 +61,7 @@
             </div>
 
             <!-- Submit button -->
-            <button type="submit" data-mdb-button-init data-mdb-ripple-init id="cus_sbmt" class="btn btn-primary btn-block mb-4">Sign in</button>
+            <button type="submit" data-mdb-button-init data-mdb-ripple-init id="cus_sbmt" class="btn btn-primary btn-block mb-4 w-100">Sign in</button>
 
             <!-- Register buttons -->
             <div class="text-center">
@@ -72,8 +87,9 @@
             </div>
         </form>
     </div>
-    @section  Scripts{
+    @section  Scripts{  
         <script src="~/Scripts/jquery-3.4.1.js"></script>
+        <script src="~/Scripts/JavaScript/sweetalert.js"></script>
         <script src="~/Scripts/JavaScript/Log_in/CustomerLogin.js"></script>
     }
 </body>
