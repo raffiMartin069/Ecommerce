@@ -40,12 +40,12 @@
                             button: "Continue",
                         });
                     }
-                    //return swal({
-                    //    title: "All set!",
-                    //    text: "Registration successful!",
-                    //    icon: "success",
-                    //    button: "Continue",
-                    //});
+                    return swal({
+                        title: "All set!",
+                        text: "Registration successful!",
+                        icon: "success",
+                        button: "Continue",
+                    });
 
                 },
                 fail: (error) => {

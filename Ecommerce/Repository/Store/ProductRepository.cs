@@ -53,7 +53,6 @@ namespace Ecommerce.Repository.Store
             }
         }
 
-
         public bool ProdUpdate(ProductViewData prodView)
         {
             int row = 0;
@@ -132,7 +131,7 @@ namespace Ecommerce.Repository.Store
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandType = System.Data.CommandType.Text;
-                    cmd.CommandText = "SELECT PRODUCT.PROD_ID, PROD_MAKE, PROD_MODEL, PROD_IMG, PP.PP_AMOUNT, PQ.PQ_QTY FROM PRODUCT_PRICE AS PP" +
+                    cmd.CommandText = "SELECT PRODUCT.PROD_ID, PROD_MAKE, PROD_MODEL, PROD_IMG, PP.PP_AMOUNT, PQ.PQ_QTY, PROD_DESC FROM PRODUCT_PRICE AS PP" +
                         " INNER JOIN PRODUCT ON PRODUCT.PROD_ID = PP.PROD_ID" +
                         " INNER JOIN PRODUCT_QUANTITY AS PQ" +
                         " ON PQ.PROD_ID = PRODUCT.PROD_ID;";
@@ -148,7 +147,8 @@ namespace Ecommerce.Repository.Store
                                     PROD_ID = Convert.ToInt32(reader["PROD_ID"]),
                                     PROD_MAKE = reader["PROD_MAKE"].ToString(),
                                     PROD_MODEL = reader["PROD_MODEL"].ToString(),
-                                    PROD_IMG = reader["PROD_IMG"].ToString()
+                                    PROD_IMG = reader["PROD_IMG"].ToString(),
+                                    PROD_DESC = reader["PROD_DESC"].ToString()
                                 },
                                 ProductPrices = new ProductPrice
                                 {
@@ -229,6 +229,28 @@ namespace Ecommerce.Repository.Store
             {
                 throw new Exception();
             }
+        }
+        public bool CheckProduct(string id)
+        {
+            string prodId = "";
+            using (var conn = new SqlConnection(SQLStr))
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandType = System.Data.CommandType.Text;
+                    cmd.CommandText = "SELECT PROD_ID FROM CART_ITEM WHERE PROD_ID = @PROD_ID;";
+                    cmd.Parameters.AddWithValue("@PROD_ID", id);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            prodId = reader["PROD_ID"].ToString();
+                        }
+                    }
+                }
+            }
+            return string.IsNullOrEmpty(prodId) ? false : true;
         }
     }
 }

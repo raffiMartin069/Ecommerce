@@ -12,8 +12,26 @@ namespace Ecommerce.Controllers
 {
     public class LogInController : Controller
     {
-        private bool LogInValidation(string[] credentials)
+
+        public ActionResult LogOut(string logout)
         {
+            string action = logout;
+
+            if(string.IsNullOrEmpty(action))
+            {
+                return RedirectToAction("Home", "Index");
+            }
+            // Abandon the session
+            Session.Abandon();
+
+            // Redirect the user to the login page (or wherever you want them to go after logging out)
+            return RedirectToAction("Index", "LogIn");
+        }
+
+        private object[] LogInValidation(string[] credentials)
+        {
+            object[] response = new object[6];
+
             try
             {
                 Credential cred = new Credential
@@ -22,19 +40,35 @@ namespace Ecommerce.Controllers
                     C_PASS = credentials[1],
                 };
 
-                if(cred == null)
+                if (cred == null)
                 {
-                    return false;
+                    response.Append(false);
+                    return response;
                 }
 
                 UserRepository repository = new UserRepository();
-                bool isMatched = repository.UserLogin(cred);
+                object[] loginResponse = repository.UserLogin(cred);
 
-                return isMatched;
-            } catch(Exception e)
+                response[0] = loginResponse[0];
+                response[1] = loginResponse[1];
+                response[2] = loginResponse[2];
+                response[3] = loginResponse[3];
+                response[4] = loginResponse[4];
+                response[5] = loginResponse[5];
+
+                if (response[0]  == null || response[1] == null || response[2] == null || response[3] == null || response[4] == null || response[5] == null)
+                {
+                    response[0] = false;
+                    return response;
+                }
+
+                return response;
+            }
+            catch (Exception e)
             {
                 System.Diagnostics.Debug.WriteLine("Exception caught while validating user credentials: " + e);
-                return false;
+                response[0] = false;
+                return response;
             }
         }
 
@@ -57,18 +91,40 @@ namespace Ecommerce.Controllers
                 return RedirectToAction("Index");
             }
 
-            bool isValidated = LogInValidation(credentials);
+            object[] loginDetails = LogInValidation(credentials);
 
-            if (!isValidated)
+            try
             {
-                return Json(isValidated);
+                bool isValidated = (bool)loginDetails[0];
+
+                if (!isValidated)
+                {
+                    return Json(isValidated);
+                }
+
+                string userEmail = (string)loginDetails[1];
+                string userPass = (string)loginDetails[2];
+                string userId = (string)loginDetails[3];
+                string userFname = (string)loginDetails[4];
+                string userLname = (string)loginDetails[5];
+
+                Session["userEmail"] = userEmail;
+                Session["userPass"] = userPass;
+                Session["userId"] = userId;
+                Session["userFname"] = userFname;
+                Session["userLname"] = userLname;
+
+                return Json(new
+                {
+                    status = isValidated,
+                    redirectUrl = Url.Action("Index", "Home")
+                });
+            } catch(Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine("Exception caught in log in: " + e);
+                return Json(false);
             }
 
-            return Json(new
-            {
-                status = isValidated,
-                redirectUrl = Url.Action("Index", "Home")
-            });
         }
 
         private bool RegisterUser(string[] formData)

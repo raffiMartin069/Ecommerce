@@ -23,29 +23,73 @@ namespace Ecommerce.Repository.User
             return ConfigurationManager.AppSettings["SQLStr"];
         }
 
-        public bool UserLogin(Credential cred)
+        public object[] BillingAddress(int id)
         {
+            object[] response = new object[6];
+            using (var conn = new SqlConnection(SQLString()))
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandType = System.Data.CommandType.Text;
+                    cmd.CommandText = "SELECT AD_STREET, AD_BRGY, AD_CITY, AD_PROVINCE, AD_ZIPCODE, USER_PHONE " +
+                        "FROM ADDRESS AS A " +
+                        "INNER JOIN " +
+                        "[USER] AS U ON A.USER_ID = @USER_ID;";
+
+                    cmd.Parameters.AddWithValue("@USER_ID", id);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            response[0] = reader["AD_STREET"];
+                            response[1] = reader["AD_BRGY"];
+                            response[2] = reader["AD_CITY"];
+                            response[3] = reader["AD_PROVINCE"];
+                            response[4] = reader["AD_ZIPCODE"];
+                            response[5] = reader["USER_PHONE"];
+                        }
+                        return response;
+                    }
+                }
+            }
+        }
+
+        public object[] UserLogin(Credential cred)
+        {
+            object[] response = new object[6];
             using(var conn = new SqlConnection(SQLString()))
             {
                 conn.Open();
                 using(var cmd = conn.CreateCommand())
                 {
                     cmd.CommandType = System.Data.CommandType.Text;
-                    cmd.CommandText = "SELECT C_EMAIL, C_PASS FROM CREDENTIAL WHERE C_EMAIL = @C_EMAIL;";
+                    cmd.CommandText = "SELECT U.USER_ID, USER_FNAME, USER_LNAME, C_EMAIL, C_PASS FROM CREDENTIAL AS C " +
+                        "INNER JOIN [USER] AS U" +
+                        " ON C.USER_ID = U.USER_ID" +
+                        " WHERE C_EMAIL = @C_EMAIL;";
                     cmd.Parameters.AddWithValue("@C_EMAIL", cred.C_EMAIL);
                     using(SqlDataReader reader =  cmd.ExecuteReader())
                     {
-                        if (reader.Read())
+                        while (reader.Read())
                         {
-                            if (cred.C_PASS == reader["C_PASS"].ToString())
+                            if (cred.C_PASS == reader["C_PASS"].ToString().Trim())
                             {
-                                return true;
+                                response[0] = true;
+                                response[1] = reader["C_EMAIL"].ToString().Trim();
+                                response[2] = reader["C_PASS"].ToString().Trim();
+                                response[3] = reader["USER_ID"].ToString().Trim();
+                                response[4] = reader["USER_FNAME"].ToString().Trim();
+                                response[5] = reader["USER_LNAME"].ToString().Trim();
+                                return response;
                             }
                         }
                     }
                 }
             }
-            return false;
+            response.Append(false);
+            return response;
         }
          
         public bool[] UserRegistrationInsert()

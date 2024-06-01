@@ -143,6 +143,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Cart\Cart.cs" />
+    <Compile Include="Models\Cart\CartItem.cs" />
     <Compile Include="Models\Credential.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\RegistrationResult.cs" />
@@ -155,11 +157,13 @@
     <Compile Include="Models\Store\ProductQuantity.cs" />
     <Compile Include="Models\User\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\Cart\CartRepository.cs" />
     <Compile Include="Repository\Store\AdminRepository.cs" />
     <Compile Include="Repository\Store\ProductEntryRepository.cs" />
     <Compile Include="Repository\Store\ProductRepository.cs" />
     <Compile Include="Repository\User\UserRepository.cs" />
     <Compile Include="ViewModel\ProductViewData.cs" />
+    <Compile Include="ViewModel\UserCartViewData.cs" />
     <Compile Include="ViewModel\UserViewData.cs" />
     <Content Include="Content\assets\alibaba.png" />
     <Content Include="Content\stylesheets\admin\admin-dash-extras.css" />
@@ -215,9 +219,11 @@
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\JavaScript\Admin\dashboard.js" />
     <Content Include="Scripts\JavaScript\Admin\Login.js" />
+    <Content Include="Scripts\JavaScript\Cart\CartCrud.js" />
     <Content Include="Scripts\JavaScript\Home\ProductUpdate.js" />
     <Content Include="Scripts\JavaScript\Api.js" />
     <Content Include="Scripts\JavaScript\Home\checkout.js" />
+    <Content Include="Scripts\JavaScript\Home\User.js" />
     <Content Include="Scripts\JavaScript\Log_in\CustomerLogin.js" />
     <Content Include="Scripts\JavaScript\Admin\ProductEntryControl.js" />
     <Content Include="Scripts\JavaScript\Log_in\SignUp.js" />

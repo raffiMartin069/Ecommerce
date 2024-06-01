@@ -18,7 +18,9 @@
     <div>
         <img class="d-block w-100 img-fluid h-auto" src="~/Content/assets/alibaba.png" alt="First slide">
     </div>
-
+    <div class="mt-5">
+        <h3>Hello @Session["userFname"]!</h3>
+    </div>
     @using (Html.BeginForm("Search/product/api", "Store", FormMethod.Get))
     {
         @Html.AntiForgeryToken()
@@ -59,8 +61,7 @@
                                         <a href="#" data-bs-toggle="modal" data-bs-target="#prod-desc-@product.Products.PROD_ID" class="h5 text-decoration-none text-dark fw-semibold">
                                             @product.Products.PROD_MAKE<br />@product.Products.PROD_MODEL
                                         </a>
-                                        <h3 class="h6 fw-light text-gray mt-2">@product.Products.PROD_DESC</h3>
-
+                                        @*<h3 class="h6 fw-light text-gray mt-2">@product.Products.PROD_DESC</h3>*@
                                         <div class="d-flex mt-3 justify-content-between">
                                             <div class="d-flex">
                                                 <div>
@@ -69,17 +70,25 @@
                                                 </div>
                                             </div>
                                             <div>
-                                                <small class="h6 fw-light text-gray mt-2 bg-success rounded text-white p-1" style="font-size:0.8rem;">
-                                                    In Stock
-                                                </small>
+                                                <button class="stocks h6 fw-light text-gray mt-2 bg-success border rounded text-white p-1 disabled" value="@product.ProductQty.PQ_QTY" style="font-size:0.8rem;">
+                                                    @product.ProductQty.PQ_QTY In Stock
+                                                </button>
+                                                
+                                            </div>
+
+                                        </div>
+                                        <div class="my-2 w-auto">
+                                            <div class="row">
+                                                <div class="col-lg-7 col-md-6 col-sm-12">
+                                                    <input type="number" name="quantity" class="quantity form-control" style="height: 30px;" placeholder="Quantity" />
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="d-flex justify-content-between align-items-end mt-3 flex-grow-1">
+                                        <div class="container">
                                             <span class="h5 mb-0 text-gray">
-                                                <span class="h5 mb-0 text-gray">@product.ProductPrices.PP_PRICE.ToString()</span>
+                                                @product.ProductPrices.PP_PRICE.ToString()
                                             </span>
-                                            <input type="submit" class="btn btn-outline-dark rounded fw-semibold mx-1" value="@product.Products.PROD_ID" />
-                                            @*<button type="submit" class="btn btn-outline-dark rounded fw-semibold mx-1" value="@product.Products.PROD_ID">Add To Cart!</button>*@
+                                            <button name="addToCart" type="submit" class="addToCart btn btn-outline-dark rounded fw-semibold mx-1 w-100" value="@product.Products.PROD_ID">Add To Cart!</button>
                                         </div>
                                     </div>
                                 </div>
@@ -90,15 +99,15 @@
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel">@product.Products.PROD_MAKE<br />@product.Products.PROD_MODEL</h1>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            ...
+                                            @product.Products.PROD_DESC
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                            <button type="button" class="btn btn-primary">Save changes</button>
+                                            @*<button type="button" class="btn btn-primary">Save changes</button>*@
                                         </div>
                                     </div>
                                 </div>
@@ -111,23 +120,11 @@
                 {
                     <p>No Product Found!</p>
                 }
-
             }
         </div>
     </div>
     <script src="~/Scripts/jquery-3.4.1.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            var maxHeight = 0;
-
-            $(".card").each(function () {
-                if ($(this).height() > maxHeight) { maxHeight = $(this).height(); }
-            });
-
-            $(".card").height(maxHeight);
-        });
-
-    </script>
-
+    <script src="~/Scripts/JavaScript/Home/User.js"></script>
+    <script src="~/Scripts/JavaScript/sweetalert.js"></script>
 </body>
 </html>

@@ -29,10 +29,13 @@
                         <li>@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                     </ul>
                 </div>
-                <div class="justify-content-end d-none d-md-block">
-                    <a href="#"><i class="bi bi-cart-fill fw-bolder text-white fs-3 mx-3"></i></a>
-                    <a href="#"><i class="bi bi-bag-check fw-bolder text-white fs-3 mx-3"></i></a>
-                    <a href="#"><i class="bi bi-person-fill fw-bolder text-white fs-3"></i></a>
+                <div class="justify-content-end gap-0 d-none d-md-block">
+                    <form method="get" action="../../Home/Cart" style="display: inline-block;">
+                        <button href="#" class="btn"><i class="bi bi-cart-fill fw-bolder text-white fs-3 mx-3"></i></button>
+                    </form>
+                    <form method="post" action="../../LogIn/LogOut" style="display: inline-block;">
+                        <button id="logout" name="logout" class="btn" value="logout"><i class="bi bi-box-arrow-right fw-bolder text-white fs-3"></i></button>
+                    </form>
                 </div>
             </div>
         </nav>

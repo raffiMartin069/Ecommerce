@@ -3,6 +3,8 @@
     ViewBag.Title = "Cart";
 }
 
+@model List<Ecommerce.ViewModel.UserCartViewData>
+
 <!doctype html>
 <html lang="en" data-bs-theme="auto">
 <head>
@@ -10,8 +12,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <link href="~/Content/stylesheets/home/checkout.css" rel="stylesheet" />
+
+    <style>
+        .custom-btn {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+    </style>
 </head>
 <body class="bg-body-tertiary">
+
+    @{
+        if (ViewData["ErrorMsg"] != null)
+        {
+            <small class="mt-5 alert alert-danger">
+                @ViewData["ErrorMsg"];
+            </small>
+        }
+    }
 
     <div class="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
         <button class="btn btn-bd-dark py-2 dropdown-toggle d-flex align-items-center"
@@ -51,52 +70,85 @@
 
     <div class="">
         <main>
+
             <div class="py-5 text-center">
-                <img class="d-block mx-auto mb-4" src="https://picsum.photos/200/300" alt="" width="72" height="57">
-                <h2>Checkout form</h2>
+                @*<img class="d-block mx-auto mb-4 img-fluid" src="~/Content/assets/amazon.jpg" alt="">*@
+                <h2>Cart</h2>
             </div>
 
-            <div class="row g-5">
+            <div class="row g-1">
                 <div class="col-md-5 col-lg-4 order-md-last">
-                    <h4 class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="text-dark">Your cart</span>
-                        <span class="badge bg-dark rounded-pill">3</span>
-                    </h4>
-                    <ul class="list-group mb-3">
-                        <li class="list-group-item d-flex justify-content-between lh-sm">
-                            <div>
-                                <h6 class="my-0">Product name</h6>
-                                <small class="text-body-secondary">Brief description</small>
-                            </div>
-                            <span class="text-body-secondary">$12</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between lh-sm">
-                            <div>
-                                <h6 class="my-0">Second product</h6>
-                                <small class="text-body-secondary">Brief description</small>
-                            </div>
-                            <span class="text-body-secondary">$8</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between lh-sm">
-                            <div>
-                                <h6 class="my-0">Third item</h6>
-                                <small class="text-body-secondary">Brief description</small>
-                            </div>
-                            <span class="text-body-secondary">$5</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between bg-body-tertiary">
-                            <div class="text-success">
-                                <h6 class="my-0">Promo code</h6>
-                                <small>EXAMPLECODE</small>
-                            </div>
-                            <span class="text-success">−$5</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between">
-                            <span>Total (USD)</span>
-                            <strong>$20</strong>
-                        </li>
-                    </ul>
 
+                    @{
+                        if (Model != null)
+                        {
+                            if (Model.Count > 0)
+                            {
+                                int counter = 0;
+                                for (int i = 0; i < Model.Count; i++)
+                                {
+                                    counter++;
+                                }
+                                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="text-dark">Your cart</span>
+                                    <span class="badge bg-dark rounded-pill">@counter</span>
+                                </h4>
+
+                                <ul class="list-group mb-3">
+
+                                    @foreach (var data in Model)
+                                    {
+                                        <li class="list-group-item d-flex justify-content-between lh-sm">
+                                            <div>
+                                                <h6 class="my-0">@data.product.PROD_MODEL</h6>
+                                                <small class="text-body-secondary">@data.product.PROD_MAKE</small>
+                                            </div>
+                                            <span class="text-body-secondary">₱ @data.price.PP_PRICE</span>
+                                        </li>
+                                    }
+                                    <li class="list-group-item d-flex justify-content-between bg-body-tertiary">
+                                        <div class="text-success">
+                                            <h6 class="my-0">Shipping Fee</h6>
+                                            <small>Free shipping!</small>
+                                        </div>
+                                        <span class="text-success">₱ 0.00</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        <span>Sub-Total (Php)</span>
+                                        <strong>
+                                            ₱
+                                            @{
+                                                if (ViewData["SubTotalPayment"] != null)
+                                                {
+                                                    @ViewData["SubTotalPayment"];
+                                                }
+                                            }
+                                        </strong>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        <span>Tax</span>
+                                        <strong>
+                                            12%
+                                        </strong>
+
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        <span>Total (Php)</span>
+                                        <strong>
+                                            ₱
+                                            @{
+                                                if (ViewData["TotalPayment"] != null)
+                                                {
+                                                    @ViewData["TotalPayment"];
+                                                }
+                                            }
+                                        </strong>
+
+                                    </li>
+                                </ul>
+                            }
+                        }
+                    }
                     <form class="card p-2">
                         <div class="input-group">
                             <input type="text" class="form-control" placeholder="Promo code">
@@ -105,49 +157,90 @@
                     </form>
                 </div>
                 <div class="col-md-7 col-lg-8">
-                    <h4 class="mb-3">Billing address</h4>
-                    <form class="needs-validation" novalidate>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="card border-light p-4">
-                                    <div class="row align-items-center">
-                                        <aside class="col-md-3">
-                                            <a href="#">
-                                                <img src="~/Content/assets/samsung_cover.jpg" class="img-fluid" alt="product-image">
-                                            </a>
-                                        </aside> <!-- col.// -->
-                                        <div class="col-md-6">
-                                            <div class="info-main">
-                                                <a href="#" class="h5 title text-decoration-none text-dark"> Apple Watch Series 3 </a>
-                                                <div class="d-flex my-3">
-                                                    <span class="badge badge-pill badge-gray ml-2">4.7</span>
-                                                    <span class="small text-success ml-3"><i class="fas fa-shopping-cart mr-1"></i>150 orders</span>
+                    <h2 class="mb-3">Billing address</h2>
+                    @{
+                        if (ViewData["Street"] != null)
+                        {
+                            if (ViewData["Brgy"] != null)
+                            {
+                                if (ViewData["City"] != null)
+                                {
+                                    if (ViewData["Province"] != null)
+                                    {
+                                        if (ViewData["Zip"] != null)
+                                        {
+                                            if (ViewData["Phone"] != null)
+                                            {
+                                                <h4>
+                                                    @Session["userFname"] @Session["userLname"]
+                                                </h4>
+                                                <h6>
+                                                    @ViewData["Street"], @ViewData["Brgy"], @ViewData["City"] City, @ViewData["Province"] Province, @ViewData["Zip"], @ViewData["Phone"]
+                                                </h6>
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        <h2 class="mt-5 mb-3">Products</h2>
+                        if (Model != null)
+                        {
+                            if (Model.Count > 0)
+                            {
+                                foreach (var data in Model)
+                                {
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="card border-light p-4">
+                                                <div class="row align-items-center">
+                                                    <aside class="col-md-3">
+                                                        <a href="#">
+                                                            <img src="~/Image/@data.product.PROD_IMG" class="img-fluid" alt="product-image">
+                                                        </a>
+                                                    </aside> <!-- col.// -->
+                                                    <div class="col-md-6">
+                                                        <div class="info-main">
+                                                            <a href="#" class="h5 title text-decoration-none text-dark"> @data.product.PROD_MAKE @data.product.PROD_MODEL </a>
+                                                            <div class="d-flex my-3">
+                                                                <span class="badge badge-pill badge-gray ml-2">4.7</span>
+                                                                <button class="stocks h6 fw-light text-gray mt-2 bg-success border rounded text-white p-1 disabled" value="@data.productQuantity.PQ_QTY">@data.productQuantity.PQ_QTY In Stock</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 col-md-3">
+                                                        <div class="d-flex align-items-center">
+                                                            <span class="h5 mb-0 text-gray text-through mr-2">
+                                                                ₱ @data.price.PP_PRICE
+                                                            </span>
+
+                                                        </div> <!-- info-price-detail // -->
+                                                        <span class="text-success small"><i class="bi bi-truck mr-1"> Free shipping</i></span>
+                                                        <div>
+                                                            <input type="text" name="quantity" class="quantity form-control" placeholder="Quantity" value="@data.cartItem.CI_QTY" />
+                                                            <input type="hidden" class="cartItemId" name="cartItemId" value="@data.cartItem.CI_ID" />
+                                                            <input type="hidden" class="prodId" name="prodId" value="@data.product.PROD_ID" />
+                                                            <input type="submit" class="mt-1 btn btn-dark w-100 update" name="actionBtn" value="Update" />
+                                                            <input type="submit" class="mt-1 btn btn-dark w-100 delete" name="actionBtn" value="Delete" />
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <p>Monitor your health. Track your workouts. Get the motivation you need to achieve your fitness goals. And stay connected to the people and information you care about.</p>
                                             </div>
                                         </div>
-                                        <div class="col-12 col-md-3">
-                                            <div class="d-flex align-items-center">
-                                                <span class="h5 mb-0 text-gray text-through mr-2">
-                                                    $299.00
-                                                </span>
-                                                <span class="h6 mb-0 text-danger">$199.00</span>
-                                            </div> <!-- info-price-detail // -->
-                                            @*<span class="text-success small"><i class="fas fa-shipping-fast mr-1"></i>Free shipping</span>*@
-                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                        <hr class="my-4">
-                        <button class="w-100 btn btn-dark btn-lg" type="submit">Continue to checkout</button>
-                    </form>
+                                }
+                            }
+                        }
+                    }
+                    <hr class="my-4">
+                    <button class="w-100 btn btn-dark btn-lg" type="submit">Continue to checkout</button>
                 </div>
             </div>
         </main>
 
         <footer class="my-5 pt-5 text-body-secondary text-center text-small">
-            <p class="mb-1">&copy; 2024–2024 Company Name</p>
+            <p class="mb-1">&copy; 2023–2024 Shop n Go</p>
             <ul class="list-inline">
                 <li class="list-inline-item"><a href="#">Privacy</a></li>
                 <li class="list-inline-item"><a href="#">Terms</a></li>
@@ -155,7 +248,10 @@
             </ul>
         </footer>
     </div>
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
     <script src="~/Scripts/JavaScript/Home/checkout.js"></script>
+    <script src="~/Scripts/JavaScript/sweetalert.js"></script>
+    <script src="~/Scripts/JavaScript/Cart/CartCrud.js"></script>
 </body>
 </html>
 
