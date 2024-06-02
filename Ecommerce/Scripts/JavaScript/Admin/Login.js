@@ -1,20 +1,51 @@
-﻿$(() => {
-    $("#cus_sbmt").on("click", () => {
+﻿$(function() {
+    $("#login_form").on("submit", function (e) {
+        e.preventDefault();
 
-        let isValid = true;
-        let obj = ["cus_email", "cus_pass"];
+        if (!$("#cus_email").val()) {
+            swal({
+                title: "Ooopss...",
+                text: "Please fill up email.",
+                icon: "warning",
+                button: "Continue",
+            });
+            return;
+        }
 
-        for (let i = 0; i < obj.length; i++) {
-            if (!$("#" + obj[i]).val()) {
-                alert("Please supply the fields");
-                isValid = false;
-                break;
+        if (!$("#cus_pass").val()) {
+            swal({
+                title: "Ooopss...",
+                text: "Please fill up password.",
+                icon: "warning",
+                button: "Continue",
+            });
+            return;
+        }
+
+        let formData = new FormData(this);
+        $.ajax({
+            url: "../Store/AdminAuthentication",
+            method: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                if (!data.response) {
+                    swal({
+                        title: "Ooopss...",
+                        text: data.mess,
+                        icon: "warning",
+                        button: "Continue",
+                    });
+                    return;
+                }
+                window.location.href = data.redirectUrl;
+            },
+            error: function (error) {
+                console.error(error);
             }
-        }
-        // if condition is true then it will show the alert.
-        if (isValid) {
-            alert("Login Successful");
-        }
+        })
 
-    });
+    })
+
 })

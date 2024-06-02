@@ -26,12 +26,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Administrator | Shopfiy</title>
-    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="d-flex" style="margin: 5rem 0 5rem">
-        <form class="m-auto border p-5 rounded shadow" id="login_form">
+        <form class="m-auto border p-5 rounded shadow" id="login_form" method="post" action="../Store/AdminAuthentication">
             <div class="form-label"><label class="form-label fw-bold fs-3 pb-5">@Html.Raw(greeting)<small class="text-primary"> Colleague!</small></label></div>
             <!-- Email input -->
             <div data-mdb-input-init class="form-outline mb-4">
@@ -44,20 +42,11 @@
                 <input type="password" id="cus_pass" name="cus_pass" class="form-control container" />
                 <label class="form-label" for="cus_pass">Password</label>
             </div>
-
-            <!-- 2 column grid layout for inline styling -->
-            <div class="row mb-4">
-                <div class="col d-flex justify-content-center">
-                    <!-- Checkbox -->
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="cus_remember" name="cus_remember" checked />
-                        <label class="form-check-label" for="cus_remember"> Remember me </label>
-                    </div>
-                </div>
+            <!-- Submit button -->
+            <div class="d-flex justify-content-center">
+                <input type="submit" id="cus_sbmt" class="btn btn-primary btn-block mb-4 w-100" value="Sign in" />
             </div>
 
-            <!-- Submit button -->
-            <button type="button" data-mdb-button-init data-mdb-ripple-init id="cus_sbmt" class="btn btn-primary btn-block mb-4 w-100">Sign in</button>
 
             <!-- Register buttons -->
             <div class="text-center">

@@ -19,7 +19,20 @@
         <img class="d-block w-100 img-fluid h-auto" src="~/Content/assets/alibaba.png" alt="First slide">
     </div>
     <div class="mt-5">
-        <h3>Hello @Session["userFname"]!</h3>
+        @{
+            if (Session["Role"] != null)
+            {
+                if ((string)Session["Role"] == "Customer")
+                {
+                    <h3>Hello @Session["userFname"]!</h3>
+                }
+                else
+                {
+                    <h3>Hello @Session["adminFname"]!</h3>
+                }
+            }
+
+        }
     </div>
     @using (Html.BeginForm("Search/product/api", "Store", FormMethod.Get))
     {

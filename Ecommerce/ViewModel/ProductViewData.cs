@@ -10,6 +10,9 @@ namespace Ecommerce.ViewModel
     {
         public Product Products { get; set; }
         public ProductPrice ProductPrices { get; set; }
+        public ProductAcquisition ProductAcquisition { get; set; }
+        public ProductLog ProductLog { get; set; }
+        public Distributor Distributor { get; set; }
         public ProductQuantity ProductQty {  get; set; } 
         public bool IsSearch {  get; set; }
     }

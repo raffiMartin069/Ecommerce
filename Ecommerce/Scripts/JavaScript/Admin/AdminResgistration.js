@@ -7,14 +7,53 @@
         for (var i = 0; i < inputs.length; i++) {
             var input = $('#' + inputs[i]);
             if (!input.val()) {
-                alert('Please fill out the ' + input.attr('name') + ' field.');
+                swal({
+                    title: "You might have missed something!",
+                    text: `Please fill missing fields.`,
+                    icon: "warning",
+                    button: "Continue",
+                });
                 isValid = false;
-                break;
+                return;
             }
+        }
+
+
+        let zip = $("#reg_zip").val().trim();
+        if (zip.length !== 4) {
+            swal({
+                title: "Validation Error",
+                text: `Zip code must be exactly 4 digits long.`,
+                icon: "warning",
+                button: "Continue",
+            });
+            return false;
+        }
+
+        let reg_phone = $("#reg_phone").val().trim();
+        if (reg_phone.length !== 11) {
+            swal({
+                title: "Validation Error",
+                text: `Phone must be exactly 11 digits long.`,
+                icon: "warning",
+                button: "Continue",
+            });
+            return false;
         }
         return isValid;
     }
 
+    $("#reg_zip").on('input', function () {
+        this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4);
+    });
+
+    $("#reg_phone").on('input', function () {
+        this.value = this.value.replace(/[^0-9]/g, '').slice(0, 11);
+    });
+
+    $('#reg_phone, #reg_zip').on('input', function () {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
     
 
     $('#reg_sbmt').click(function () {
@@ -26,23 +65,23 @@
         let formData = new FormData($("form")[0]);
         try {
             $.ajax({
-                url: "../Store/Register",
+                url: "../Store/RegisterAdmin",
                 method: "POST",
                 data: formData,
                 contentType: false,
                 processData: false,
                 success: (data) => {
-                    if (!data) {
+                    if (!data.response) {
                         return swal({
-                            title: "All set!",
-                            text: "Registration failed!",
+                            title: "Oopss..",
+                            text: data.content,
                             icon: "fail",
                             button: "Continue",
                         });
                     }
                     return swal({
                         title: "All set!",
-                        text: "Registration successful!",
+                        text: data.content,
                         icon: "success",
                         button: "Continue",
                     });

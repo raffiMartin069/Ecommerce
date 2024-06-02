@@ -1,9 +1,4 @@
-﻿.table td, .table th {
-    word-wrap: break-word; /* Break words to prevent stretching */
-    max-width: 150px; /* Limit the maximum width of a cell */
+﻿.table-responsive {
+    max-height: 800px; /* Set the desired height */
+    overflow-y: auto; /* Enable vertical scrolling */
 }
-
-/*.table img {
-    max-width: 100%;
-    height: auto;
-}*/

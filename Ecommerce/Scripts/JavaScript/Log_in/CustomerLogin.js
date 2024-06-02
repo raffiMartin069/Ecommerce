@@ -13,7 +13,12 @@
     $("#loginForm").on("submit", function (e) {
         e.preventDefault();
         if (!cusLogin()) {
-            alert("Please fill all the fields");
+            swal({
+                title: "Oopss..Forgot something?",
+                text: "Please fill up missing fields.",
+                icon: "warning",
+                button: "Continue",
+            });
             return;
         }
 
@@ -25,11 +30,11 @@
                 method: "POST",
                 data: formData,
                 success: function (data) {
-                    if (!data.status) {
+                    if (!data.response) {
                         return swal({
                             title: "Log in failed",
-                            text: data.response,
-                            icon: "fail",
+                            text: data.content,
+                            icon: "error",
                             button: "Continue",
                         });
                     } else {

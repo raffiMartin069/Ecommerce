@@ -17,6 +17,42 @@ namespace Ecommerce.Repository.Store
             return ConfigurationManager.AppSettings["SQLStr"];
         }
 
+        public object[] AdminAuth(Credential creds)
+        {
+            object[] response = new object[6];
+            using (var conn = new SqlConnection(SQLString()))
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandType = System.Data.CommandType.Text;
+                    cmd.CommandText = "SELECT A.A_ID, A_FNAME, A_LNAME, C_EMAIL, C_PASS FROM CREDENTIAL AS C " +
+                        "INNER JOIN ADMIN AS A " +
+                        "ON C.A_ID = A.A_ID " +
+                        "WHERE C_EMAIL = @C_EMAIL;";
+
+                    cmd.Parameters.AddWithValue("@C_EMAIL", creds.C_EMAIL.Trim());
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            if (creds.C_PASS.Trim() == reader["C_PASS"].ToString().Trim())
+                            {
+                                response[0] = true;
+                                response[1] = reader["C_EMAIL"].ToString().Trim();
+                                response[2] = reader["C_PASS"].ToString().Trim();
+                                response[3] = reader["A_ID"].ToString().Trim();
+                                response[4] = reader["A_FNAME"].ToString().Trim();
+                                response[5] = reader["A_LNAME"].ToString().Trim();
+                            }
+                        }
+                    }
+                }
+            }
+            return response[0] is true ? response : new object[] { false };
+        }
+
         public int AdminDetails(Admin data)
         {
             int id = 0;

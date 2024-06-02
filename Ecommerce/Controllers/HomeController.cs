@@ -42,6 +42,11 @@ namespace Ecommerce.Controllers
 
         public ActionResult Index()
         {
+            if ((string)Session["Role"] != "Customer" && (string)Session["Role"] != "Admin")
+            {
+                return RedirectToAction("Index", "LogIn");
+            }
+
             try
             {
                 ProductRepository productRepository = new ProductRepository();
@@ -70,6 +75,10 @@ namespace Ecommerce.Controllers
 
         public ActionResult Checkout()
         {
+            if ((string)Session["Role"] != "Customer" && (string)Session["Role"] != "Admin")
+            {
+                return RedirectToAction("Index", "LogIn");
+            }
             ViewBag.Message = "Your contact page.";
 
             return View();
@@ -78,10 +87,6 @@ namespace Ecommerce.Controllers
         private bool CartItem()
         {
             bool isAdded = true;
-
-
-
-
             return isAdded;
         }
 
@@ -179,6 +184,10 @@ namespace Ecommerce.Controllers
 
         public ActionResult Cart()
         {
+            //if ((string)Session["Role"] != "Customer" && (string)Session["Role"] != "Admin")
+            //{
+            //    return RedirectToAction("Index", "LogIn");
+            //}
             try
             {
                 CartRepository cartRepo = new CartRepository();
@@ -321,6 +330,10 @@ namespace Ecommerce.Controllers
 
         public ActionResult TrackOrder()
         {
+            if ((string)Session["Role"] != "Customer" && (string)Session["Role"] != "Admin")
+            {
+                return RedirectToAction("Index", "LogIn");
+            }
             return View();
         }
     }

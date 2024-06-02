@@ -14,6 +14,36 @@ namespace Ecommerce.Repository.Store
     {
         private readonly string SQLStr = ConfigurationManager.AppSettings["SQLStr"];
 
+        public List<Distributor> GetDistributors()
+        {
+            var list = new List<Distributor>();
+
+            using(var conn = new SqlConnection(SQLStr))
+            {
+                conn.Open();
+                using(var cmd = conn.CreateCommand()) {
+
+                    cmd.CommandType = System.Data.CommandType.Text;
+                    cmd.CommandText = "SELECT * FROM DISTRIBUTOR";
+                    using(var reader = cmd.ExecuteReader())
+                    {
+                        while(reader.Read()) {
+
+                            var dist = new Distributor
+                            {
+                                D_ID = Convert.ToInt32(reader["D_ID"]),
+                                D_NAME = reader["D_ID"].ToString(),
+                                D_DATE_ENTERED = reader["D_DATE_ENTERED"].ToString(),
+                                D_TIME_ENTERED = reader["D_TIME_ENTERED"].ToString(),
+                            };
+                            list.Add(dist);
+                        }
+                    }
+                }
+                return list;
+            }
+        }
+
         public List<object> ProdIdSearch(Product prod)
         {
             var info = new List<object>();
@@ -23,11 +53,13 @@ namespace Ecommerce.Repository.Store
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandType = System.Data.CommandType.Text;
-                    cmd.CommandText = "SELECT P.PROD_MAKE, P.PROD_MODEL, P.PROD_WARRANTY, PP.PP_AMOUNT, PQ.PQ_QTY " +
-                                      "FROM PRODUCT P " +
-                                      "INNER JOIN PRODUCT_PRICE PP ON P.PROD_ID = PP.PROD_ID " +
-                                      "INNER JOIN PRODUCT_QUANTITY PQ ON P.PROD_ID = PQ.PROD_ID " +
-                                      "WHERE P.PROD_ID = @PROD_ID;";
+                    cmd.CommandText = "SELECT P.PROD_MAKE, P.PROD_MODEL, P.PROD_WARRANTY, P.PROD_DESC, PP.PP_AMOUNT, PQ.PQ_QTY, D.D_ID, D.D_NAME " +
+                      "FROM PRODUCT P " +
+                      "INNER JOIN PRODUCT_PRICE PP ON P.PROD_ID = PP.PROD_ID " +
+                      "INNER JOIN PRODUCT_QUANTITY PQ ON P.PROD_ID = PQ.PROD_ID " +
+                      "INNER JOIN DISTRIBUTOR D ON P.D_ID = D.D_ID " +
+                      "WHERE P.PROD_ID = @PROD_ID;";
+
                     cmd.Parameters.AddWithValue("@PROD_ID", prod.PROD_ID);
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -38,6 +70,9 @@ namespace Ecommerce.Repository.Store
                             info.Add(reader["PROD_WARRANTY"]);
                             info.Add(reader["PP_AMOUNT"]);
                             info.Add(reader["PQ_QTY"]);
+                            info.Add(reader["PROD_DESC"]);
+                            info.Add(reader["D_NAME"]);
+                            info.Add(reader["D_ID"]);
                         }
                     }
 
@@ -62,19 +97,24 @@ namespace Ecommerce.Repository.Store
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandType = System.Data.CommandType.Text;
-                    cmd.CommandText = "UPDATE PRODUCT SET PROD_MAKE = @PROD_MAKE, PROD_MODEL = @PROD_MODEL, PROD_WARRANTY = @PROD_WARRANTY WHERE PROD_ID = @PROD_ID; UPDATE PRODUCT_QUANTITY SET PQ_QTY = @PQ_QTY WHERE PROD_ID = @PROD_ID; UPDATE PRODUCT_PRICE SET PP_AMOUNT = @PP_AMOUNT WHERE PROD_ID = @PROD_ID;";
+                    cmd.CommandText = "UPDATE PRODUCT SET PROD_MAKE = @PROD_MAKE, PROD_MODEL = @PROD_MODEL, PROD_WARRANTY = @PROD_WARRANTY, PROD_DESC = @PROD_DESC, D_ID = @D_ID WHERE PROD_ID = @PROD_ID; UPDATE PRODUCT_QUANTITY SET PQ_QTY = @PQ_QTY WHERE PROD_ID = @PROD_ID; UPDATE PRODUCT_PRICE SET PP_AMOUNT = @PP_AMOUNT WHERE PROD_ID = @PROD_ID;";
                     cmd.Parameters.AddWithValue("@PROD_ID", prodView.Products.PROD_ID);
                     cmd.Parameters.AddWithValue("@PROD_MAKE", prodView.Products.PROD_MAKE);
                     cmd.Parameters.AddWithValue("@PROD_MODEL", prodView.Products.PROD_MODEL);
                     cmd.Parameters.AddWithValue("@PROD_WARRANTY", prodView.Products.PROD_WARRANTY);
+                    cmd.Parameters.AddWithValue("@PROD_DESC", prodView.Products.PROD_DESC);
+                    cmd.Parameters.AddWithValue("@D_ID", prodView.Distributor.D_ID); // Update the distributor ID associated with the product
                     cmd.Parameters.AddWithValue("@PQ_QTY", prodView.ProductQty.PQ_QTY);
                     cmd.Parameters.AddWithValue("@PP_AMOUNT", Convert.ToDecimal(prodView.ProductPrices.PP_PRICE));
                     row = cmd.ExecuteNonQuery();
+
                 }
             }
 
             return row > 0 ? true : throw new Exception();
         }
+
+
 
 
         public bool ProdDelete(Product prod)

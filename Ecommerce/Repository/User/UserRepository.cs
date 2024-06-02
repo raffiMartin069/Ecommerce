@@ -23,6 +23,187 @@ namespace Ecommerce.Repository.User
             return ConfigurationManager.AppSettings["SQLStr"];
         }
 
+        public bool DeleteUser(string userIdString, string phone)
+        {
+            int rowsAffected = 0;
+            // Convert the string to an integer
+            int userId = Convert.ToInt32(userIdString);
+            using (var conn = new SqlConnection(SQLString()))
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandType = System.Data.CommandType.Text;
+
+                    // Delete the user from the USER, ADDRESS, and CREDENTIAL tables
+                    cmd.CommandText = "DELETE FROM [USER] WHERE USER_ID = @USER_ID AND USER_PHONE = @USER_PHONE;";
+
+                    cmd.Parameters.AddWithValue("@USER_ID", userId);
+                    cmd.Parameters.AddWithValue("@USER_PHONE", phone);
+
+                    rowsAffected = cmd.ExecuteNonQuery();
+                }
+            }
+            // Return true if at least one row was affected
+            return rowsAffected > 0 ? true : false;
+        }
+
+
+        public bool UpdateUser(UserViewData userViewData)
+        {
+            int rowsAffected = 0;
+
+            using (var conn = new SqlConnection(SQLString()))
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandType = System.Data.CommandType.Text;
+
+                    cmd.CommandText = "UPDATE [USER] SET USER_FNAME = @USER_FNAME," +
+                    " USER_LNAME = @USER_LNAME," +
+                    " USER_PHONE = @USER_PHONE" +
+                    " WHERE " +
+                    " USER_ID = @USER_ID; " + // Added a space after the semicolon
+                    "UPDATE " +
+                    "ADDRESS SET " +
+                    "AD_STREET = @AD_STREET, " +
+                    "AD_BRGY = @AD_BRGY, " +
+                    "AD_CITY = @AD_CITY, " +
+                    "AD_PROVINCE = @AD_PROVINCE, " +
+                    "AD_ZIPCODE = @AD_ZIPCODE " +
+                    "WHERE " +
+                    "USER_ID = @USER_ID;";
+
+                    cmd.Parameters.AddWithValue("@USER_ID", userViewData.UserModel.USER_ID);
+                    cmd.Parameters.AddWithValue("@USER_FNAME", userViewData.UserModel.USER_FNAME.Trim());
+                    cmd.Parameters.AddWithValue("@USER_LNAME", userViewData.UserModel.USER_LNAME.Trim());
+                    cmd.Parameters.AddWithValue("@USER_PHONE", userViewData.UserModel.USER_PHONE.Trim());
+                    cmd.Parameters.AddWithValue("@AD_STREET", userViewData.Address.AD_STREET.Trim());
+                    cmd.Parameters.AddWithValue("@AD_BRGY", userViewData.Address.AD_BRGY.Trim());
+                    cmd.Parameters.AddWithValue("@AD_CITY", userViewData.Address.AD_CITY.Trim());
+                    cmd.Parameters.AddWithValue("@AD_PROVINCE", userViewData.Address.AD_PROVINCE.Trim());
+                    cmd.Parameters.AddWithValue("@AD_ZIPCODE", userViewData.Address.AD_ZIPCODE.Trim());
+
+
+                    rowsAffected = cmd.ExecuteNonQuery();
+                }
+            }
+
+            return rowsAffected > 0;
+        }
+
+
+        public List<UserViewData> GetIndividualUser(int id)
+        {
+            var list = new List<UserViewData>();
+
+
+            using (var conn = new SqlConnection(SQLString()))
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandType = System.Data.CommandType.Text;
+                    cmd.CommandText = "SELECT * FROM [USER] AS U " +
+                        "INNER JOIN " +
+                        "CREDENTIAL AS C " +
+                        "ON " +
+                        "U.USER_ID = C.USER_ID " +
+                        "INNER JOIN ADDRESS AS A " +
+                        "ON U.USER_ID = A.USER_ID" +
+                        " WHERE U.USER_ID = @USER_ID;";
+
+                    cmd.Parameters.AddWithValue("@USER_ID", id);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(new UserViewData
+                            {
+                                UserModel = new UserModel()
+                                {
+                                    USER_ID = Convert.ToInt32(reader["USER_ID"]),
+                                    USER_FNAME = reader["USER_FNAME"].ToString(),
+                                    USER_LNAME = reader["USER_LNAME"].ToString(),
+                                    USER_PHONE = reader["USER_PHONE"].ToString(),
+                                },
+                                Address = new Address()
+                                {
+                                    AD_STREET = reader["AD_STREET"].ToString(),
+                                    AD_BRGY = reader["AD_BRGY"].ToString(),
+                                    AD_CITY = reader["AD_CITY"].ToString(),
+                                    AD_PROVINCE = reader["AD_PROVINCE"].ToString(),
+                                    AD_ZIPCODE = reader["AD_ZIPCODE"].ToString(),
+                                },
+                                Credential = new Credential()
+                                {
+                                    C_EMAIL = reader["C_EMAIL"].ToString(),
+                                    C_PASS = reader["C_PASS"].ToString(),
+                                },
+                            });
+                        }
+                    }
+                }
+                return list;
+            }
+        }
+
+        public List<UserViewData> GetUsers()
+        {
+            var list = new List<UserViewData>();
+
+
+            using (var conn = new SqlConnection(SQLString()))
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+
+                    cmd.CommandType = System.Data.CommandType.Text;
+                    cmd.CommandText = "SELECT * FROM [USER] AS U " +
+                        "INNER JOIN " +
+                        "CREDENTIAL AS C " +
+                        "ON " +
+                        "U.USER_ID = C.USER_ID " +
+                        "INNER JOIN ADDRESS AS A " +
+                        "ON U.USER_ID = A.USER_ID;";
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(new UserViewData
+                            {
+                                UserModel = new UserModel()
+                                {
+                                    USER_ID = Convert.ToInt32(reader["USER_ID"]),
+                                    USER_FNAME = reader["USER_FNAME"].ToString(),
+                                    USER_LNAME = reader["USER_LNAME"].ToString(),
+                                    USER_PHONE = reader["USER_PHONE"].ToString(),
+                                },
+                                Address = new Address()
+                                {
+                                    AD_STREET = reader["AD_STREET"].ToString(),
+                                    AD_BRGY = reader["AD_BRGY"].ToString(),
+                                    AD_CITY = reader["AD_CITY"].ToString(),
+                                    AD_PROVINCE = reader["AD_PROVINCE"].ToString(),
+                                    AD_ZIPCODE = reader["AD_ZIPCODE"].ToString(),
+                                },
+                                Credential = new Credential()
+                                {
+                                    C_EMAIL = reader["C_EMAIL"].ToString(),
+                                    C_PASS = reader["C_PASS"].ToString(),
+                                },
+                            });
+                        }
+                    }
+                }
+                return list;
+            }
+        }
+
         public object[] BillingAddress(int id)
         {
             object[] response = new object[6];
@@ -88,7 +269,7 @@ namespace Ecommerce.Repository.User
                     }
                 }
             }
-            response.Append(false);
+            response[0] = false;
             return response;
         }
          
@@ -178,7 +359,6 @@ namespace Ecommerce.Repository.User
                 throw e;
             }
         }
-
 
         public bool UserCredential(int data, SqlTransaction transaction)
         {

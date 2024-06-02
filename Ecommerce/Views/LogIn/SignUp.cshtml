@@ -73,7 +73,7 @@
                                         </div>
                                         <div class="col-md-6 mb-4">
                                             <div data-mdb-input-init class="form-outline">
-                                                <input type="text" id=" " name="reg_brgy" class="form-control" />
+                                                <input type="text" id="reg_brgy" name="reg_brgy" class="form-control" />
                                                 <label class="form-label" for="reg_brgy">Barangay</label>
                                             </div>
                                         </div>
@@ -99,7 +99,7 @@
                                     </div>
 
                                     <div data-mdb-input-init class="form-outline mb-4">
-                                        <input type="password" id="reg_zip" name="zip code" class="form-control" />
+                                        <input type="number" id="reg_zip" name="zipcode" class="form-control" />
                                         <label class="form-label" for="reg_zip">Zip Code</label>
                                     </div>
 
@@ -109,13 +109,6 @@
                                         <label class="form-label" for="reg_pass">Password</label>
                                     </div>
 
-                                    <!-- Checkbox -->
-                                    <div class="form-check d-flex justify-content-center mb-4">
-                                        <input class="form-check-input me-2" type="checkbox" value="" id="reg_news" name="reg_news" checked />
-                                        <label class="form-check-label" for="reg_news">
-                                            Subscribe to our newsletter
-                                        </label>
-                                    </div>
 
                                     <!-- Submit button -->
                                     <button type="submit" id="reg_sbmt" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block mb-4 w-100">
@@ -155,46 +148,7 @@
         <script src="~/Scripts/jquery-3.4.1.js"></script>
         @*<script src="~/Scripts/JavaScript/Log_in/SignUp.js"></script>*@
         <script src="~/Scripts/JavaScript/Api.js"></script>
-        <script>
-            $(function () {
-                const validation = () => {
-                    var inputs = ['reg_fname', 'reg_lname', 'reg_email', 'reg_phone', 'reg_street', 'reg_brgy', 'reg_city', 'reg_province', 'reg_zip', 'reg_pass'];
-                    var isValid = true;
-
-                    for (var i = 0; i < inputs.length; i++) {
-                        var input = $('#' + inputs[i]);
-                        if (!input.val()) {
-                            alert('Please fill out the ' + input.attr('name') + ' field.');
-                            isValid = false;
-                            break;
-                        }
-                    }
-                    return isValid;
-                }
-
-
-                $("#register").on("submit", function (e) {
-                    e.preventDefault();
-                    validation();
-
-                    let formData = new FormData(this);
-
-                    $.ajax({
-                        url: "../LogIn/Register",
-                        method: "POST",
-                        data: formData,
-                        contentType: false,
-                        processData: false,
-                        success: function (data) {
-                            alert(data);
-                        },
-                        fail: function (error) {
-
-                        }
-                    })
-                })
-            })
-        </script>
+        <script src="~/Scripts/JavaScript/Log_in/RegisterValidation.js"></script>
     }
     <!-- Section: Design Block -->
 </body>

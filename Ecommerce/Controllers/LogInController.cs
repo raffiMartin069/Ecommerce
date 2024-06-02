@@ -17,15 +17,44 @@ namespace Ecommerce.Controllers
         {
             string action = logout;
 
-            if(string.IsNullOrEmpty(action))
+            if (string.IsNullOrEmpty(action))
             {
                 return RedirectToAction("Home", "Index");
             }
+
             // Abandon the session
             Session.Abandon();
 
+            // Expire the session cookie
+            if (Response.Cookies["ASP.NET_SessionId"] != null)
+            {
+                Response.Cookies["ASP.NET_SessionId"].Expires = DateTime.Now.AddYears(-1);
+            }
+
             // Redirect the user to the login page (or wherever you want them to go after logging out)
             return RedirectToAction("Index", "LogIn");
+        }
+
+        public ActionResult AdminLogOut(string logout)
+        {
+            string action = logout;
+
+            if (string.IsNullOrEmpty(action))
+            {
+                return RedirectToAction("Home", "Index");
+            }
+
+            // Abandon the session
+            Session.Abandon();
+
+            // Expire the session cookie
+            if (Response.Cookies["ASP.NET_SessionId"] != null)
+            {
+                Response.Cookies["ASP.NET_SessionId"].Expires = DateTime.Now.AddYears(-1);
+            }
+
+            // Redirect the user to the login page (or wherever you want them to go after logging out)
+            return RedirectToAction("Index", "Store");
         }
 
         private object[] LogInValidation(string[] credentials)
@@ -72,6 +101,20 @@ namespace Ecommerce.Controllers
             }
         }
 
+        private bool InputValidation(string[] arr)
+        {
+            bool isNull = false;
+            for (int i = 0; i < arr.Length; i++)
+            {
+                if (string.IsNullOrEmpty(arr[i]))
+                {
+                    isNull = true;
+                    break;
+                }
+            }
+            return isNull;
+        }
+
         [HttpPost]
         public ActionResult LogIn(FormCollection data)
         {
@@ -99,7 +142,11 @@ namespace Ecommerce.Controllers
 
                 if (!isValidated)
                 {
-                    return Json(isValidated);
+                    return Json(new
+                    {
+                        response = false,
+                        content = "User not found."
+                    });
                 }
 
                 string userEmail = (string)loginDetails[1];
@@ -113,10 +160,11 @@ namespace Ecommerce.Controllers
                 Session["userId"] = userId;
                 Session["userFname"] = userFname;
                 Session["userLname"] = userLname;
+                Session["Role"] = "Customer";
 
                 return Json(new
                 {
-                    status = isValidated,
+                    response = true,
                     redirectUrl = Url.Action("Index", "Home")
                 });
             } catch(Exception e)
@@ -196,23 +244,39 @@ namespace Ecommerce.Controllers
             string barangay = data["reg_brgy"];
             string city = data["city"];
             string province = data["province"];
-            string zipCode = data["zip code"];
+            string zipCode = data["zipcode"];
             string password = data["password"];
 
-            string serverResponse = "Successfully register information";
-
             // Store everything to an array
-            string[] formData = new string[] { firstName, lastName, email, phone, street, barangay, city, province, zipCode, password };
+            string[] formData = { firstName, lastName, email, phone, street, barangay, city, province, zipCode, password };
+
+            bool isFilled = InputValidation(formData);
+
+            if(isFilled)
+            {
+                return Json(new
+                {
+                    response = false,
+                    content = "Please check and fill up the fields."
+                });
+            }
 
             bool response = RegisterUser(formData);
 
             if(!response)
             {
-                serverResponse = "Failed to register information";
-                return Json(serverResponse);
+                return Json(new
+                {
+                    response = false,
+                    content = "Failed to register information."
+                });
             }
 
-            return Json(serverResponse);
+            return Json(new
+            {
+                response = true,
+                content = "Registered Successfuly!."
+            });
         }
 
         public ActionResult Index()

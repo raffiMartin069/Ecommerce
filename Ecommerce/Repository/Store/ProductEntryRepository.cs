@@ -66,17 +66,26 @@ namespace Ecommerce.Repository.Store
                     {
                         cmd.CommandType = System.Data.CommandType.Text;
                         cmd.CommandText = "SELECT P.PROD_ID," +
-                            " P.PROD_MAKE," +
-                            " P.PROD_MODEL," +
-                            " P.PROD_WARRANTY," +
-                            " P.PROD_DESC," +
-                            " PQ.PQ_QTY," +
-                            " PP_AMOUNT" +
-                            " FROM PRODUCT AS P" +
-                            " INNER JOIN PRODUCT_QUANTITY AS PQ" +
-                            " ON P.PROD_ID = PQ.PROD_ID" +
-                            " INNER JOIN PRODUCT_PRICE AS PP" +
-                            " ON P.PROD_ID = PP.PROD_ID;";
+                        " P.PROD_MAKE," +
+                        " P.PROD_MODEL," +
+                        " P.PROD_WARRANTY, P.PROD_IMG, " +
+                        " P.PROD_DESC," +
+                        " PQ.PQ_QTY," +
+                        " PP.PP_AMOUNT," +
+                        " PA.PA_DATE," +
+                        " PL.PL_ID," +
+                        " PL.PL_DATE," +
+                        " PL.PL_TIME," +
+                        " D.D_ID," +
+                        " D.D_NAME," +
+                        " D.D_TIME_ENTERED," +
+                        " D.D_DATE_ENTERED" +
+                        " FROM PRODUCT AS P" +
+                        " INNER JOIN PRODUCT_QUANTITY AS PQ ON P.PROD_ID = PQ.PROD_ID" +
+                        " INNER JOIN PRODUCT_PRICE AS PP ON P.PROD_ID = PP.PROD_ID" +
+                        " INNER JOIN PRODUCT_ACQUISITION AS PA ON P.PROD_ID = PA.PROD_ID" +
+                        " INNER JOIN PRODUCT_LOG AS PL ON P.PROD_ID = PL.PROD_ID" +
+                        " INNER JOIN DISTRIBUTOR AS D ON P.D_ID = D.D_ID;";
 
                         using (SqlDataReader reader = cmd.ExecuteReader())
                         {
@@ -91,6 +100,7 @@ namespace Ecommerce.Repository.Store
                                         PROD_MODEL = reader["PROD_MODEL"].ToString(),
                                         PROD_WARRANTY = Convert.ToInt32(reader["PROD_WARRANTY"]),
                                         PROD_DESC = reader["PROD_DESC"].ToString(),
+                                        PROD_IMG = reader["PROD_IMG"].ToString()
                                     },
                                     ProductQty = new ProductQuantity
                                     {
@@ -99,10 +109,25 @@ namespace Ecommerce.Repository.Store
                                     ProductPrices = new ProductPrice
                                     {
                                         PP_PRICE = reader["PP_AMOUNT"].ToString()
+                                    },
+                                    ProductAcquisition = new ProductAcquisition
+                                    {
+                                        PA_DATE = reader["PA_DATE"].ToString()
+                                    },
+                                    ProductLog = new ProductLog
+                                    {
+                                        PL_ID = Convert.ToInt32(reader["PL_ID"]),
+                                        PL_DATE = reader["PL_DATE"].ToString(),
+                                        PL_TIME = reader["PL_TIME"].ToString()
+                                    },
+                                    Distributor = new Distributor
+                                    {
+                                        D_ID = Convert.ToInt32(reader["D_ID"]),
+                                        D_NAME = reader["D_NAME"].ToString(),
+                                        D_DATE_ENTERED = reader["D_DATE_ENTERED"].ToString(),
+                                        D_TIME_ENTERED = reader["D_TIME_ENTERED"].ToString()
                                     }
-                                    
-                            };
-
+                                };
                                 prodList.Add(prodView);
                             }
                         }

@@ -45,6 +45,11 @@
                     <li>@Html.ActionLink("Analytics", "Analytics", "Store", new { area = "" }, new { @class = "nav-link" })</li>
                 </ul>
             </div>
+            <div class="justify-content-end gap-0 d-none d-md-block">
+                <form method="post" action="../../LogIn/AdminLogOut" style="display: inline-block;">
+                    <button id="logout" name="logout" class="btn" value="logout"><i class="bi bi-box-arrow-right fw-bolder text-white fs-3"></i></button>
+                </form>
+            </div>
         </div>
     </nav>
 

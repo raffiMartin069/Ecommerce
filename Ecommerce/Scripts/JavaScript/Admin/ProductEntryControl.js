@@ -39,7 +39,12 @@
     function userControl() {
         let userId = $("#userId").val();
         if (!TextFieldControl(userId)) {
-            alert("I.D. is required.");
+            swal({
+                title: "Oopss...",
+                text: "Please enter your I.D.",
+                icon: "warning",
+                button: "Continue",
+            });
             return;
         }
 
@@ -53,22 +58,42 @@
         let purchaseDate = $("#purchase-date").val();
 
         if (!TextFieldControl(make)) {
-            alert("Make is required.");
+            swal({
+                title: "Oopss...",
+                text: "Make is required",
+                icon: "warning",
+                button: "Continue",
+            });
             return false;
         }
 
         if (!TextFieldControl(model)) {
-            alert("Model is required.");
+            swal({
+                title: "Oopss...",
+                text: "Model is required",
+                icon: "warning",
+                button: "Continue",
+            });
             return false;
         }
 
         if (!TextFieldControl(distributor)) {
-            alert("Distributor is required.");
+            swal({
+                title: "Oopss...",
+                text: "Distributor is required",
+                icon: "warning",
+                button: "Continue",
+            });
             return false;
         }
 
         if (!TextFieldControl(purchaseDate)) {
-            alert("Purchase date is required.");
+            swal({
+                title: "Oopss...",
+                text: "Purchased date is required",
+                icon: "warning",
+                button: "Continue",
+            });
             return false;
         }
 
@@ -78,27 +103,58 @@
         let img = $("#prodimg")[0];
 
         if (!TextFieldControl(price)) {
-            alert("Price is required.");
+            swal({
+                title: "Oopss...",
+                text: "Price is required",
+                icon: "warning",
+                button: "Continue",
+            });
             return false;
         } else if (price <= 0) {
-            alert("Price must be greater than 0.00.");
+            swal({
+                title: "Oopss...",
+                text: "Price can not be equal or lesser than zero",
+                icon: "warning",
+                button: "Continue",
+            });
+            return false;
         }
 
         if (!TextFieldControl(quantity)) {
-            alert("Quantity is required.");
+            swal({
+                title: "Oopss...",
+                text: "Quantity is required",
+                icon: "warning",
+                button: "Continue",
+            });
             return false;
         } else if (quantity <= 0) {
-            alert("Quantity must be greater than 0.");
+            swal({
+                title: "Oopss...",
+                text: "Quanttiy can not be zero or lesser than zero.",
+                icon: "warning",
+                button: "Continue",
+            });
             return false;
         }
 
         if (!TextFieldControl(warranty)) {
-            alert("Warranty is required.");
+            swal({
+                title: "Oopss...",
+                text: "Warranty is required",
+                icon: "warning",
+                button: "Continue",
+            });
             return false;
         }
 
         if (img.files.length === 0) {
-            alert("Image is required.");
+            swal({
+                title: "Oopss...",
+                text: "Image is required",
+                icon: "warning",
+                button: "Continue",
+            });
             return false;
         }
         return true;

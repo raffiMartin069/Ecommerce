@@ -1,6 +1,8 @@
 ﻿using Ecommerce.Models;
+using Ecommerce.Models.User;
 using Ecommerce.Models.Store;
 using Ecommerce.Repository.Store;
+using Ecommerce.Repository.User;
 using Ecommerce.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -13,16 +15,307 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
+using System.Web.Routing;
 using System.Web.Services.Description;
 using System.Xml.Linq;
 using WebGrease.Css.Ast.Selectors;
+using Antlr.Runtime.Tree;
+using System.Security.Policy;
+using System.Globalization;
 
 
 namespace Ecommerce.Controllers
 {
     public class StoreController : Controller
     {
-        // GET: Store
+
+        private List<UserViewData> SearchUserId(string id)
+        {
+            int userId = Convert.ToInt32(id);
+
+            try
+            {
+                UserRepository user = new UserRepository();
+                var result = user.GetIndividualUser(userId);
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine("Exception searching user id: " + e);
+                return new List<UserViewData>();
+            }
+        }
+
+        private bool UserUpdateInfo(string[] array)
+        {
+            int prodId = Convert.ToInt32(array[0]);
+            try
+            {
+                UserViewData userViewData = new UserViewData
+                {
+                    UserModel = new UserModel
+                    {
+                        USER_ID = prodId,
+                        USER_FNAME = array[1],
+                        USER_LNAME = array[2],
+                        USER_PHONE = array[3],
+                    },
+                    Address = new Address
+                    {
+                        AD_STREET = array[5],
+                        AD_BRGY = array[6],
+                        AD_CITY = array[7],
+                        AD_PROVINCE = array[8],
+                        AD_ZIPCODE = array[9],
+                    },
+                    Credential = new Credential
+                    {
+                        C_EMAIL = array[4],
+                    }
+                };
+
+                UserRepository user = new UserRepository();
+                var result = user.UpdateUser(userViewData);
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine("Exception updating a user: " + e);
+                return false;
+            }
+        }
+
+        private bool UserDeleteInfo(string id, string phone)
+        {   
+            try
+            {
+                UserRepository user = new UserRepository();
+                bool result = user.DeleteUser(id, phone);
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine("Exception deleting a user: " + e);
+                return false;
+            }
+        }
+
+        private bool validateUserId(string a)
+        {
+            return string.IsNullOrEmpty(a) ? true : false;
+        }
+
+        public ActionResult UserAdminAction(FormCollection data)
+        {
+            string id = data["id"];
+            string clickAction = data["clickAction"];
+            string fname = data["fname"];
+            string lname = data["lname"];
+            string phone = data["phone"];
+            string email = data["email"];
+            string street = data["street"];
+            string brgy = data["brgy"];
+            string city = data["city"];
+            string province = data["province"];
+            string zip = data["zip"];
+
+
+            string[] dataConllection = { id, fname, lname, phone, email, street, brgy, city, province, zip };
+
+            bool idValidation = validateUserId(id);
+
+            bool validateFields = InputValidation(dataConllection);
+
+            if(idValidation == true && clickAction == "Search")
+            {
+                return Json(new
+                {
+                    response = false,
+                    content = "Id is empty."
+                });
+            }
+
+            if(clickAction != "Search" && !string.IsNullOrEmpty(email))
+            {
+                if (validateFields)
+                {
+                    return Json(new
+                    {
+                        response = false,
+                        content = "Please check for empty fields."
+                    });
+                }
+            }
+
+            switch (clickAction)
+            {
+                case "Search":
+                    var contentCount = SearchUserId(id).Count();
+                    var content = SearchUserId(id);
+                    bool res = false;
+                    if (contentCount < 1)
+                    {
+                        return Json(new
+                        {
+                            response = res,
+                            content = "No user found."
+                        });
+                    }
+                    else
+                    {
+                        res = true;
+                        return Json(new
+                        {
+                            action = clickAction,
+                            response = res,
+                            contents = content
+                        });
+                    }
+
+                case "Update":
+                    res = UserUpdateInfo(dataConllection);
+                    return Json(new
+                    {
+                        action = clickAction,
+                        response = res
+                    });
+                case "Delete":
+                    res = UserDeleteInfo(id, phone);
+                    if(!res)
+                    {
+                        return Json(new
+                        {
+                            action = clickAction,
+                            response = res,
+                            content = "Input mismatch or user not found."
+                        });
+                    }
+                    return Json(new
+                    {
+                        action = clickAction,
+                        response = res
+                    });
+
+                default:
+                    break;
+            }
+
+            return Json(new
+            {
+                success = true,
+                response = clickAction
+            });
+
+        }
+
+        public ActionResult CustomerPage()
+        {
+            if ((string)Session["Role"] != "Admin")
+            {
+                return RedirectToAction("Index", "LogIn");
+            }
+
+            try
+            {
+                UserRepository userRepo = new UserRepository();
+                var display = userRepo.GetUsers();
+                return View(display);
+            } catch(Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine("Exception caught: " + e);
+                return View();
+            }
+        }
+
+        private bool InputValidation(string[] arr)
+        {
+            bool isNull = false;
+            for(int i = 0; i < arr.Length; i++)
+            {
+                if (string.IsNullOrEmpty(arr[i]))
+                {
+                    isNull = true;
+                    break;
+                }
+            }
+            return isNull;
+        }
+
+        private bool AdminAuth(string[] fields)
+        {
+
+            Credential admin = new Credential
+            {
+                C_EMAIL = fields[0],
+                C_PASS = fields[1]
+            };
+
+            AdminRepository auth = new AdminRepository();
+            object[] adminData = auth.AdminAuth(admin);
+
+            try
+            {
+                if (!(bool)adminData[0])
+                {
+                    return false;
+                }
+            } catch(Exception e)
+            {
+                Debug.WriteLine("Exception in inserting data: " + e);
+            }
+
+
+
+            Session["adminEmail"] = adminData[1];
+            Session["adminPass"] = adminData[2];
+            Session["adminId"] = adminData[3];
+            Session["adminFname"] = adminData[4];
+            Session["adminLname"] = adminData[5];
+            Session["Role"] = "Admin";
+
+            return true;
+        }
+
+        public ActionResult AdminAuthentication(FormCollection form)
+        {
+            string[] fields = { form["cus_email"], form["cus_pass"]};
+            bool validate = InputValidation(fields);
+
+            if (validate == true)
+            {
+                return Json(new
+                {
+                    response = false,
+                    mess = "Please fill up the missing fields."
+                });
+            }
+
+            bool auth = AdminAuth(fields);
+
+            if (!auth)
+            {
+                return Json(new
+                {
+                    response = false,
+                    mess = "Invalid credentials. Please contact administrator."
+                });
+            }
+
+
+            // Get the URL of the Admin page
+            string redirectUrl = Url.Action("Admin", "Store");
+
+            return Json(new
+            {
+                response = true,
+                mess = "Log in successful.",
+                redirectUrl = redirectUrl  // Add the redirect URL to the response
+            });
+        }
+        
         public ActionResult Index()
         {
             return View();
@@ -31,38 +324,47 @@ namespace Ecommerce.Controllers
         private async Task<List<ProductViewData>> LoadProducts()
         {
             ProductEntryRepository prod = new ProductEntryRepository();
+
+            
+
             return await prod.GetAllProducts();
         }
 
         public async Task<ActionResult> Admin()
         {
+            if ((string)Session["Role"] != "Admin")
+            {
+                return RedirectToAction("Index", "LogIn");
+            }
+            
+
             try
             {
                 var products = await LoadProducts();
+
                 if (products == null)
                 {
-                    return RedirectToAction("Admin");
+                    return View();
                 }
                 return View(products);
             }
             catch (Exception e)
             {
                 System.Diagnostics.Debug.WriteLine("Error occured while fetching products: " + e);
-                return RedirectToAction("Admin");
+                return View();
             }
         }
 
         private List<object> SearchProId(string id)
         {
-            int prodId = Convert.ToInt32(id);
-            
-            Product prod = new Product
-            {
-                PROD_ID = prodId
-            };
-
             try
             {
+                int prodId = Convert.ToInt32(id);
+                Product prod = new Product
+                {
+                    PROD_ID = prodId
+                };
+
                 ProductRepository product = new ProductRepository();
                 var result = product.ProdIdSearch(prod);
 
@@ -75,9 +377,9 @@ namespace Ecommerce.Controllers
 
         private bool ProductUpdateInfo(string[] array)
         {
-            int prodId = Convert.ToInt32(array[0]);
             try
             {
+                int prodId = Convert.ToInt32(array[0]);
                 ProductViewData prodView = new ProductViewData
                 {
                     Products = new Product
@@ -85,7 +387,8 @@ namespace Ecommerce.Controllers
                         PROD_ID = prodId,
                         PROD_MAKE = array[1],
                         PROD_MODEL = array[2],
-                        PROD_WARRANTY = Convert.ToInt32(array[3])
+                        PROD_WARRANTY = Convert.ToInt32(array[3]),
+                        PROD_DESC = array[6],
                     },
                     ProductQty = new ProductQuantity
                     {
@@ -93,7 +396,12 @@ namespace Ecommerce.Controllers
                     },
                     ProductPrices = new ProductPrice
                     {
-                        PP_PRICE =array[5],
+                        PP_PRICE = array[5],
+                    },
+                    Distributor = new Distributor
+                    {
+                        D_ID = Convert.ToInt32(array[7]),
+                        D_NAME = array[8],
                     }
                 };
                 ProductRepository product = new ProductRepository();
@@ -102,7 +410,7 @@ namespace Ecommerce.Controllers
                 return result;
             }catch(Exception e)
             {
-                System.Diagnostics.Debug.WriteLine("Exception searching updating the product: " + e);
+                System.Diagnostics.Debug.WriteLine("Exception updating the product: " + e);
                 return false;
             }
         }
@@ -123,7 +431,7 @@ namespace Ecommerce.Controllers
             }
             catch (Exception e)
             {
-                System.Diagnostics.Debug.WriteLine("Exception searching updating the product: " + e);
+                System.Diagnostics.Debug.WriteLine("Exception deleting the product: " + e);
                 return false;
             }
         }
@@ -133,18 +441,35 @@ namespace Ecommerce.Controllers
         public ActionResult ProductUpdate(FormCollection data)
         {
             string prodId = data["id"];
-            string clickAction = data["action"];
+            string clickAction = data["clickAction"];
             string make = data["make"];
             string model = data["model"];
             string warranty = data["warranty"];
             string qty = data["quantity"];
 
+            string desc = data["desc"];
+            string distId = data["distributor"];
+            string distName = data["distName"];
+
             string price = data["price"];
-            
 
-            string[] dataConllection = { prodId, make, model, warranty, qty, price };
+            string[] dataConllection = { prodId, make, model, warranty, qty, price, desc, distId, distName };
 
-            switch(clickAction)
+            bool validateInputs = InputValidation(dataConllection);
+
+            if (clickAction != "Search")
+            {
+                if (validateInputs)
+                {
+                    return Json(new
+                    {
+                        response = false,
+                        content = "Make sure there are no missing fields."
+                    });
+                }
+            }
+
+            switch (clickAction)
             {
                 case "Search":
                     var contentCount = SearchProId(prodId).Count();
@@ -174,7 +499,8 @@ namespace Ecommerce.Controllers
                     return Json(new
                     {
                         action = clickAction,
-                        response = res
+                        response = res,
+                        content = "Unable to update, no product found."
                     });
                 case "Delete":
                     res = ProductDeleteInfo(dataConllection);
@@ -203,6 +529,11 @@ namespace Ecommerce.Controllers
 
         public async Task<ActionResult> ProductEntry()
         {
+            // Check session roles
+            if ((string)Session["Role"] != "Admin")
+            {
+                return RedirectToAction("Index", "LogIn");
+            }
             try
             {
                 var distributors = await LoadDistributors();
@@ -222,6 +553,10 @@ namespace Ecommerce.Controllers
 
         public ActionResult Register()
         {
+            if ((string)Session["Role"] != "Admin")
+            {
+                return RedirectToAction("Index", "LogIn");
+            }
             return View();
         }
 
@@ -236,16 +571,87 @@ namespace Ecommerce.Controllers
         }
 
         [HttpPost]
-        public ActionResult Register(FormCollection data)
+        public ActionResult RegisterAdmin(FormCollection data)
         {
-            AdminRepository adminRepo = new AdminRepository();
-            Admin admin = new Admin
+
+            string firstName = data["firstname"];
+            string lastName = data["lastname"];
+            string middleName = data["middlename"];
+            string email = data["email"];
+            string phone = data["phone"];
+            string street = data["street"];
+            string barangay = data["baranggay"];
+            string city = data["city"];
+            string province = data["province"];
+            string zipCode = data["zipcode"];
+            string password = data["password"];
+
+            string[] formData =
+             {
+                firstName,
+                lastName,
+                email,
+                phone,
+                street,
+                barangay,
+                city,
+                province,
+                zipCode,
+                password
+             };
+
+            if(zipCode.Length != 4)
             {
-                A_FNAME = NormalizeStr(data["firstname"]),
-                A_LNAME = NormalizeStr(data["lastname"]),
-                A_MNAME = NormalizeStr(data["middlename"]),
-                A_PHONE = data["phone"]
-            };
+                return Json(new
+                {
+                    response = false,
+                    content = "Zip code must be exactly 4 digits."
+                });
+            }
+
+            if (phone.Length != 11)
+            {
+                return Json(new
+                {
+                    response = false,
+                    content = "Phone must be exactly 11 digits."
+                });
+            }
+
+            bool isValidated = InputValidation(formData);
+
+            if(isValidated)
+            {
+                return Json(new
+                {
+                    response = false,
+                    content = "Inputs must not be null."
+                });
+            }
+
+            AdminRepository adminRepo = new AdminRepository();
+            Admin admin = new Admin();
+
+            if(string.IsNullOrEmpty(middleName))
+            {
+                admin = new Admin
+                {
+                    A_FNAME = NormalizeStr(firstName),
+                    A_LNAME = NormalizeStr(lastName),
+                    A_MNAME = middleName,
+                    A_PHONE = phone
+                };
+            } 
+            else
+            {
+                admin = new Admin
+                {
+                    A_FNAME = NormalizeStr(firstName),
+                    A_LNAME = NormalizeStr(lastName),
+                    A_MNAME = NormalizeStr(middleName),
+                    A_PHONE = phone
+                };
+            }
 
             int adminId = 0;
 
@@ -255,16 +661,16 @@ namespace Ecommerce.Controllers
             }
             catch (Exception e)
             {
-                System.Diagnostics.Debug.WriteLine("Exception catched: " + e);
+                Debug.WriteLine("Exception catched: " + e);
             }
 
             Address address = new Address
             {
-                AD_STREET = NormalizeStr(data["street"]),
-                AD_BRGY = NormalizeStr(data["baranggay"]),
-                AD_PROVINCE = NormalizeStr(data["province"]),
-                AD_CITY = NormalizeStr(data["city"]),
-                AD_ZIPCODE = NormalizeStr(data["zipcode"]),
+                AD_STREET = NormalizeStr(street),
+                AD_BRGY = NormalizeStr(barangay),
+                AD_PROVINCE = NormalizeStr(province),
+                AD_CITY = NormalizeStr(city),
+                AD_ZIPCODE = NormalizeStr(zipCode),
                 A_ID = adminId.ToString()
             };
 
@@ -276,13 +682,13 @@ namespace Ecommerce.Controllers
             }
             catch (Exception e)
             {
-                System.Diagnostics.Debug.WriteLine("Exception catched: " + e);
+                Debug.WriteLine("Exception catched: " + e);
             }
 
             Credential credential = new Credential
             {
-                C_EMAIL = data["email"],
-                C_PASS = data["password"],
+                C_EMAIL = email,
+                C_PASS = password,
                 A_ID = adminId.ToString()
             };
 
@@ -290,16 +696,32 @@ namespace Ecommerce.Controllers
             try
             {
                 credId = adminRepo.AdminCredential(credential);
+
+                if( credId == 0 )
+                {
+                    return Json(new
+                    {
+                        response = false,
+                        content = "Something went wrong."
+                    });
+                }
+
+                return Json(new
+                {
+                    response = true,
+                    content = "User registered!"
+                });
             }
             catch (Exception e)
             {
 
-                System.Diagnostics.Debug.WriteLine("Exception catched: " + e);
+                Debug.WriteLine("Exception catched: " + e);
+                return Json(new
+                {
+                    response = false,
+                    content = "Inputs must not be null."
+                });
             }
-
-            bool registrationResult = AdminRegistration(adminId, addressId, credId);
-
-            return Json(registrationResult);
         }
 
         private bool SearchAdmin(Admin id)
@@ -311,7 +733,7 @@ namespace Ecommerce.Controllers
                 return found;
             } catch (Exception e)
             {
-                System.Diagnostics.Debug.WriteLine("Exception caught while looking of admin I.D. : " + e);
+                Debug.WriteLine("Exception caught while looking of admin I.D. : " + e);
                 return false;
             }
         }
@@ -468,33 +890,30 @@ namespace Ecommerce.Controllers
             return coverage > -1 ? true : false;
         }
 
-        public bool ValidateAcquisitionDate(string aquiredDate)
+        public bool ValidateAcquisitionDate(string acquiredDate)
         {
-            string[] date_list = aquiredDate.Split('-');
-            // YYY-MMM-DD Formart
-            string year = date_list[0];
-            string month = date_list[1];
-            string date = date_list[2];
-
-            DateTime currentDate = DateTime.Now;
-
-            if (Convert.ToInt32(year) > Convert.ToInt32(currentDate.Year))
+            // Parse the input date string
+            DateTime parsedDate;
+            if (!DateTime.TryParseExact(acquiredDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedDate))
             {
                 return false;
             }
 
-            if (Convert.ToInt32(month) > Convert.ToInt32(currentDate.Month))
-            {
-                return false;
-            }
+            // Get the current date (without time part)
+            DateTime currentDate = DateTime.Today;
 
-            if (Convert.ToInt32(date) > Convert.ToInt32(currentDate.Day))
+            // Calculate the date 5 months ago from today
+            DateTime fiveMonthsAgo = currentDate.AddMonths(-5);
+
+            // Check if the parsed date is before today and within the past 5 months
+            if (parsedDate > currentDate || parsedDate < fiveMonthsAgo)
             {
                 return false;
             }
 
             return true;
         }
+
 
         public bool CheckPriceEntry(string price)
         {
@@ -512,6 +931,42 @@ namespace Ecommerce.Controllers
         [HttpPost]
         public ActionResult Entries(FormCollection data, HttpPostedFileBase prodimg)
         {
+
+            string userId = data["userId"];
+            string make = data["make"];
+            string model = data["model"];
+            string distributor = data["distributor"];
+            string purchaseDate = data["purchase-date"];
+            string price = data["price"];
+            string quantity = data["quantity"];
+            string warranty = data["warranty"];
+            string desc = data["desc"];
+
+            string[] formData =
+            {
+                userId,
+                make,
+                model,
+                distributor,
+                purchaseDate,
+                price,
+                quantity,
+                warranty,
+                desc,
+            };
+
+
+            bool validateInputs = InputValidation(formData);
+
+            if(validateInputs)
+            {
+                return Json(new
+                {
+                    success = false,
+                    response = "Fields can not be empty."
+                });
+            }
+
             var imgValidationResponse = ImageValidation(prodimg);
             // THIS WILL BE REVIEWED FIRST
             if (!(bool)imgValidationResponse[0])
@@ -528,7 +983,7 @@ namespace Ecommerce.Controllers
             // Search through the database for matches, if found we proceed to the process below.
             Admin adminId = new Admin
             {
-                A_ID = data["userId"]
+                A_ID = userId
             };
 
             bool isFound = SearchAdmin(adminId);
@@ -537,11 +992,12 @@ namespace Ecommerce.Controllers
             {
                 return Json(new
                 {
-                    success = false, response = "Please enter a valid admin I.D."
+                    success = false, 
+                    response = "Please enter a valid admin I.D."
                 });
             }
 
-            string warranty = data["warranty"];
+           
             bool validateDate = ValidateWarranty(warranty);
 
             if (!validateDate)
@@ -553,7 +1009,7 @@ namespace Ecommerce.Controllers
                 });
             }
 
-            string initialPrice = data["price"];
+            string initialPrice = price;
             bool checkPrice = CheckPriceEntry(initialPrice);
             if(!checkPrice)
             {
@@ -564,7 +1020,7 @@ namespace Ecommerce.Controllers
                 });
             }
 
-            string initialQty = data["quantity"];
+            string initialQty = quantity;
             bool checkQty = checkQuantity(initialQty);
             if(!checkQty)
             {
@@ -575,27 +1031,27 @@ namespace Ecommerce.Controllers
                 });
             }
 
-            bool productValidator = ValidateAcquisitionDate(data["purchase-date"]);
-            if (!productValidator)
-            {
-                return Json(new
-                {
-                    success = false,
-                    response = "Purchase date should be atleast a day before or at current date."
-                });
-            }
+            //bool productValidator = ValidateAcquisitionDate(purchaseDate);
+            //if (!productValidator)
+            //{
+            //    return Json(new
+            //    {
+            //        success = false,
+            //        response = "Purchase date should be atleast a day before or at current date."
+            //    });
+            //}
 
-            int prodWarranty = Convert.ToInt32(NormalizeStr(data["warranty"]));
+            int prodWarranty = Convert.ToInt32(NormalizeStr(warranty));
 
             Product product = new Product
             {
-                PROD_MAKE = NormalizeStr(data["make"]),
-                PROD_MODEL = NormalizeStr(data["model"]),
+                PROD_MAKE = make,
+                PROD_MODEL = model,
                 PROD_WARRANTY = prodWarranty,
-                PROD_DESC = NormalizeStr(data["desc"]),
+                PROD_DESC = NormalizeStr(desc),
                 PROD_IMG = prodImg,
-                A_ID = Convert.ToInt32(data["userId"]),
-                D_ID = Convert.ToInt32(data["distributor"])
+                A_ID = Convert.ToInt32(userId),
+                D_ID = Convert.ToInt32(distributor)
             };
 
             int prodId = InsertProduct(product);
@@ -620,7 +1076,7 @@ namespace Ecommerce.Controllers
 
             ProductAcquisition prodAcquire = new ProductAcquisition
             {
-                PA_DATE = data["purchase-date"],
+                PA_DATE = purchaseDate,
                 PROD_ID = prodId
             };
 
@@ -634,13 +1090,13 @@ namespace Ecommerce.Controllers
                 });
             }
 
-            ProductPrice price = new ProductPrice
+            ProductPrice productPrice = new ProductPrice
             {
                 PP_PRICE = (PriceValidation(data["price"])),
                 PROD_ID = prodId
             };
 
-            bool priceValidation = PriceInsert(price);
+            bool priceValidation = PriceInsert(productPrice);
             if (!priceValidation)
             {
                 return Json(new
@@ -652,7 +1108,7 @@ namespace Ecommerce.Controllers
 
             ProductQuantity pq = new ProductQuantity
             {
-                PQ_QTY = Convert.ToInt32(data["quantity"]),
+                PQ_QTY = Convert.ToInt32(quantity),
                 PROD_ID = prodId
             };
 
